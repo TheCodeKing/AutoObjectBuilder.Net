@@ -1,0 +1,114 @@
+﻿/*=============================================================================
+*
+*	(C) Copyright 2010, Michael Carlisle (mike.carlisle@thecodeking.co.uk)
+*
+*   http://www.TheCodeKing.co.uk
+*  
+*	All rights reserved.
+*	The code and information is provided "as-is" without waranty of any kind,
+*	either expressed or implied.
+*
+*=============================================================================
+*/
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.Serialization;
+using TheCodeKing.AutoBuilder.Extensions;
+using TheCodeKing.AutoBuilder.Interfaces;
+
+namespace TheCodeKing.AutoBuilder.Core
+{
+    internal class AutoObjectBuilder : IAutoObjectBuilder
+    {
+        private readonly IDictionary<string, object> cache = new Dictionary<string, object>();
+        private readonly IAutoConfigurationResolver configuration;
+        private readonly IAutoFiller filler;
+
+        internal AutoObjectBuilder(IAutoConfigurationResolver configuration, Func<IAutoConfigurationResolver, IAutoObjectBuilder, IObjectParser, IAutoFiller> filler, IObjectParser parser)
+        {
+            this.filler = filler(configuration, this, parser);
+            this.configuration = configuration;
+        }
+
+        #region IAutoBuilder Members
+
+        public T CreateObject<T>()
+        {
+            return (T)CreateObject(typeof(T));
+        }
+
+        public object CreateObject(Type type)
+        {
+            var f = configuration.GetFactory(type);
+            if (f != null)
+            {
+                return f(type);
+            }
+            if (type.IsEnum)
+            {
+                f = configuration.GetFactory(typeof(Enum));
+                if (f != null)
+                {
+                    return f(type);
+                }
+            }
+            return GetNewObject(type) ?? type.GetDefault();
+        }
+
+        #endregion
+
+        private object GetNewObject(Type type)
+        {
+             var key = type.CreateKey();
+             object item;
+             if (cache.TryGetValue(key, out item))
+             {
+                 return item;
+             }
+             var o = CreateNewObject(type);
+             if (o != null)
+             {
+                 cache[key] = o;
+                 filler.FillObject(o);
+             }
+             return o;
+         }
+
+        private object CreateNewObject(Type type)
+        {
+            if (type.IsInterface)
+            {
+                return null;
+            }
+
+            var arr = type.GetConstructors().Where(c => ConstructorDoesNotContainType(c, type)).Select(p => p).ToArray();
+            if (arr.Length == 0)
+            {
+                arr =
+                    type.GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic).Where(
+                        c => ConstructorDoesNotContainType(c, type)).Select(p => p).ToArray();
+                if (arr.Length == 0)
+                {
+                    return FormatterServices.GetUninitializedObject(type);
+                }
+            }
+            // try object with least parameters
+            var info = arr.OrderBy(o => o.GetParameters().Length).ElementAtOrDefault(0);
+            if (info == null || info.GetParameters().Length == 0)
+            {
+                return Activator.CreateInstance(type);
+            }
+            var pArr = info.GetParameters();
+            var args = pArr.Select(p => CreateObject(p.ParameterType)).ToArray();
+            return info.Invoke(args);
+        }
+
+        private static bool ConstructorDoesNotContainType(ConstructorInfo info, Type type)
+        {
+            return info.GetParameters().ToList().Find(p => p.ParameterType == type) == null;
+        }
+
+    }
+}

@@ -1,0 +1,111 @@
+﻿/*=============================================================================
+*
+*	(C) Copyright 2010, Michael Carlisle (mike.carlisle@thecodeking.co.uk)
+*
+*   http://www.TheCodeKing.co.uk
+*  
+*	All rights reserved.
+*	The code and information is provided "as-is" without waranty of any kind,
+*	either expressed or implied.
+*
+*=============================================================================
+*/
+using System;
+using System.Linq.Expressions;
+using System.Reflection;
+using TheCodeKing.AutoBuilder.Interfaces;
+
+namespace TheCodeKing.AutoBuilder.Core
+{
+    public class AutoExpression<T> : IAutoExpression<T>
+    {
+        private readonly IAutoObjectBuilder builder;
+        private readonly IAutoConfigurationResolver configuration;
+        private bool intiailized;
+        private T obj;
+
+        internal AutoExpression(Func<IAutoConfigurationResolver, Func<IAutoConfigurationResolver, IAutoObjectBuilder, IObjectParser, IAutoFiller>, IAutoObjectBuilder> builderFactory,
+            Func<IAutoConfigurationResolver, IAutoObjectBuilder, IObjectParser, IAutoFiller> filler,
+            IAutoConfigurationResolver configuration)
+        {
+            builder = builderFactory(configuration, filler);
+            this.configuration = configuration;
+        }
+
+        public T Object
+        {
+            get
+            {
+                if (!intiailized)
+                {
+                    intiailized = true;
+                    obj = builder.CreateObject<T>();
+                }
+                return obj;
+            }
+        }
+
+        #region IAutoExpression<T> Members
+
+        public AutoExpression<T> Factory<TTarget>(TTarget value)
+        {
+            configuration.Factory(value);
+            return this;
+        }
+
+        public AutoExpression<T> Factory<TTarget>(Func<TTarget> factory)
+        {
+            configuration.Factory(factory);
+            return this;
+        }
+
+        public AutoExpression<T> Factory<TTarget>(Func<Type, TTarget> factory)
+        {
+            configuration.Factory(factory);
+            return this;
+        }
+
+        public AutoExpression<T> Set<TTarget>(Expression<Func<TTarget, object>> expression, object value)
+        {
+            configuration.Set(expression, value);
+            return this;
+        }
+
+        public AutoExpression<T> Setter<TTarget>(Func<MemberInfo, TTarget> setter)
+        {
+            configuration.Setter(setter);
+            return this;
+        }
+
+        public AutoExpression<T> Max()
+        {
+            configuration.Max();
+            return this;
+        }
+
+        public AutoExpression<T> Min()
+        {
+            configuration.Min();
+            return this;
+            }
+
+        public AutoExpression<T> Default()
+        {
+            configuration.Default();
+            return this;
+        }
+
+        public AutoExpression<T> Empty()
+        {
+            configuration.Empty();
+            return this;
+        }
+        
+        #endregion
+
+        public static implicit operator T(AutoExpression<T> exp)
+        {
+            return exp.Object;
+        }
+    }
+}
