@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TheCodeKing.AutoBuilder.Test.Helper
+namespace ObjectAutoBuilder.Test.Helper
 {
     public class UriPerson
     {

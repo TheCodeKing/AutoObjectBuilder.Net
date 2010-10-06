@@ -1,8 +1,9 @@
 ﻿using System;
-using TheCodeKing.AutoBuilder.Test.Helper;
+using AutoObjectBuilder;
 using NUnit.Framework;
+using ObjectAutoBuilder.Test.Helper;
 
-namespace TheCodeKing.AutoBuilder.Test.Base
+namespace ObjectAutoBuilder.Test.Base
 {
     public abstract class TestFixtureBase
     {

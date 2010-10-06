@@ -11,11 +11,11 @@
 *=============================================================================
 */
 using System;
-using TheCodeKing.AutoBuilder.Config;
-using TheCodeKing.AutoBuilder.Core;
-using TheCodeKing.AutoBuilder.Interfaces;
+using AutoObjectBuilder.Config;
+using AutoObjectBuilder.Core;
+using AutoObjectBuilder.Interfaces;
 
-namespace TheCodeKing.AutoBuilder
+namespace AutoObjectBuilder
 {
     public sealed class Auto
     {
@@ -37,8 +37,8 @@ namespace TheCodeKing.AutoBuilder
         public static AutoExpression<T> Make<T>()
         {
             IObjectParser objParser = new ObjectParser();
-            Func<IAutoConfigurationResolver, IAutoObjectBuilder, IObjectParser, IAutoFiller> fillerFactory = (config, builder, parser) => new AutoFiller(config, builder, parser);
-            Func<IAutoConfigurationResolver, Func<IAutoConfigurationResolver, IAutoObjectBuilder, IObjectParser, IAutoFiller>, IAutoObjectBuilder> builderFactory = (config, filler) => new AutoObjectBuilder(config, filler, objParser);
+            Func<IAutoConfigurationResolver, IAutoBuilder, IObjectParser, IAutoFiller> fillerFactory = (config, builder, parser) => new AutoFiller(config, builder, parser);
+            Func<IAutoConfigurationResolver, Func<IAutoConfigurationResolver, IAutoBuilder, IObjectParser, IAutoFiller>, IAutoBuilder> builderFactory = (config, filler) => new AutoBuilder(config, filler, objParser);
             return new AutoExpression<T>(builderFactory, fillerFactory, new CurrentAutoConfiguration(Resolver));
         }
     }

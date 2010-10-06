@@ -10,7 +10,7 @@
 *
 *=============================================================================
 */
-namespace TheCodeKing.AutoBuilder.Interfaces
+namespace AutoObjectBuilder.Interfaces
 {
     internal interface IAutoFiller
     {

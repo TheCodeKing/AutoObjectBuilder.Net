@@ -15,18 +15,18 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
-using TheCodeKing.AutoBuilder.Extensions;
-using TheCodeKing.AutoBuilder.Interfaces;
+using AutoObjectBuilder.Extensions;
+using AutoObjectBuilder.Interfaces;
 
-namespace TheCodeKing.AutoBuilder.Core
+namespace AutoObjectBuilder.Core
 {
     public class AutoFiller : IAutoFiller
     {
-        private readonly IAutoObjectBuilder builder;
+        private readonly IAutoBuilder builder;
         private readonly IObjectParser parser;
         private readonly IAutoConfigurationResolver config;
 
-        internal AutoFiller(IAutoConfigurationResolver config, IAutoObjectBuilder builder, IObjectParser parser)
+        internal AutoFiller(IAutoConfigurationResolver config, IAutoBuilder builder, IObjectParser parser)
         {
             this.config = config;
             this.parser = parser;

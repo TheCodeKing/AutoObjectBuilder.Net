@@ -12,9 +12,9 @@
 */
 using System;
 
-namespace TheCodeKing.AutoBuilder.Interfaces
+namespace AutoObjectBuilder.Interfaces
 {
-    internal interface IAutoObjectBuilder
+    internal interface IAutoBuilder
     {
         T CreateObject<T>();
 

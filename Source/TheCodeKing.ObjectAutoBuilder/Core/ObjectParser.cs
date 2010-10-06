@@ -13,9 +13,9 @@
 using System;
 using System.Linq;
 using System.Reflection;
-using TheCodeKing.AutoBuilder.Interfaces;
+using AutoObjectBuilder.Interfaces;
 
-namespace TheCodeKing.AutoBuilder.Core
+namespace AutoObjectBuilder.Core
 {
     internal class ObjectParser : IObjectParser
     {

@@ -11,12 +11,17 @@
 *=============================================================================
 */
 using System;
-using TheCodeKing.AutoBuilder.Base;
+using AutoObjectBuilder.Base;
 
-namespace TheCodeKing.AutoBuilder.Config
+namespace AutoObjectBuilder.Config
 {
     internal sealed class DefaultAutoConfiguration : AutoConfiguration
     {
+        public DefaultAutoConfiguration()
+        {
+            UseDefaultConfiguration();
+        }
+
         public override void UseDefaultConfiguration()
         {
             base.UseDefaultConfiguration();

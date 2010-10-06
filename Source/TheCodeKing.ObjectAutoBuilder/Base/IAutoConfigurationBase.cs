@@ -14,7 +14,7 @@ using System;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace TheCodeKing.AutoBuilder.Base
+namespace AutoObjectBuilder.Base
 {
     public interface IAutoConfigurationBase<T>
     {

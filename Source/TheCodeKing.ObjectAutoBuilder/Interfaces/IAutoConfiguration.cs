@@ -10,9 +10,9 @@
 *
 *=============================================================================
 */
-using TheCodeKing.AutoBuilder.Base;
+using AutoObjectBuilder.Base;
 
-namespace TheCodeKing.AutoBuilder.Interfaces
+namespace AutoObjectBuilder.Interfaces
 {
     public interface IAutoConfiguration : IAutoConfigurationBase<IAutoConfiguration>
     {

@@ -10,16 +10,17 @@
 *
 *=============================================================================
 */
-using TheCodeKing.AutoBuilder.Base;
-using TheCodeKing.AutoBuilder.Interfaces;
+using AutoObjectBuilder.Base;
+using AutoObjectBuilder.Interfaces;
 
-namespace TheCodeKing.AutoBuilder.Config
+namespace AutoObjectBuilder.Config
 {
     internal sealed class CurrentAutoConfiguration : AutoConfiguration
     {
         public CurrentAutoConfiguration(IAutoConfigurationResolver globalConfiguration)
             :base(globalConfiguration)
         {
+            UseDefaultConfiguration();
         }
     }
 }

@@ -14,10 +14,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using TheCodeKing.AutoBuilder.Extensions;
-using TheCodeKing.AutoBuilder.Interfaces;
+using AutoObjectBuilder.Extensions;
+using AutoObjectBuilder.Interfaces;
 
-namespace TheCodeKing.AutoBuilder.Base
+namespace AutoObjectBuilder.Base
 {
     public class AutoConfiguration : IAutoConfigurationResolver
     {
@@ -31,13 +31,11 @@ namespace TheCodeKing.AutoBuilder.Base
 
         internal AutoConfiguration()
         {
-            UseDefaultConfiguration();
         }
 
         internal AutoConfiguration(IAutoConfigurationResolver configuration)
         {
             this.configuration = configuration;
-            UseDefaultConfiguration();
         }
 
         public virtual void UseDefaultConfiguration()

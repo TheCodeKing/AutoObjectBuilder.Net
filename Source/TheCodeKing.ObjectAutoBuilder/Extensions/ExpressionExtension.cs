@@ -13,7 +13,7 @@
 using System;
 using System.Linq.Expressions;
 
-namespace TheCodeKing.AutoBuilder.Extensions
+namespace AutoObjectBuilder.Extensions
 {
     internal static class ExpressionExtension
     {

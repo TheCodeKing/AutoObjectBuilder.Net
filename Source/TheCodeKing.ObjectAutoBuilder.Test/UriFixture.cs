@@ -1,9 +1,10 @@
 ﻿using System;
-using TheCodeKing.AutoBuilder.Test.Base;
-using TheCodeKing.AutoBuilder.Test.Helper;
+using AutoObjectBuilder;
 using NUnit.Framework;
+using ObjectAutoBuilder.Test.Base;
+using ObjectAutoBuilder.Test.Helper;
 
-namespace TheCodeKing.AutoBuilder.Test
+namespace ObjectAutoBuilder.Test
 {
     [TestFixture]
     public class UriFixture : TestFixtureBase

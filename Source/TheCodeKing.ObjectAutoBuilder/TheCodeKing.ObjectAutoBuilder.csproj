@@ -8,8 +8,8 @@
     <ProjectGuid>{90356EED-33B4-4398-98F3-1AFB807EAF07}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TheCodeKing.AutoBuilder</RootNamespace>
-    <AssemblyName>AutoBuilder</AssemblyName>
+    <RootNamespace>AutoObjectBuilder</RootNamespace>
+    <AssemblyName>AutoObjectBuilder</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
@@ -44,7 +44,7 @@
     <Compile Include="Base\AutoConfiguration.cs" />
     <Compile Include="Config\CurrentAutoConfiguration.cs" />
     <Compile Include="Config\DefaultAutoConfiguration.cs" />
-    <Compile Include="Core\AutoObjectBuilder.cs" />
+    <Compile Include="Core\AutoBuilder.cs" />
     <Compile Include="Core\AutoFiller.cs" />
     <Compile Include="Base\IAutoConfigurationBase.cs" />
     <Compile Include="Interfaces\IAutoConfiguration.cs" />
@@ -57,7 +57,7 @@
     <Compile Include="Extensions\TypeExtension.cs" />
     <Compile Include="Interfaces\IAutoConfigurationResolver.cs" />
     <Compile Include="Core\AutoExpression.cs" />
-    <Compile Include="Interfaces\IAutoObjectBuilder.cs" />
+    <Compile Include="Interfaces\IAutoBuilder.cs" />
     <Compile Include="Interfaces\IAutoExpression.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

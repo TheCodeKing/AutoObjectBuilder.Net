@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace TheCodeKing.AutoBuilder.Test.Helper
+namespace ObjectAutoBuilder.Test.Helper
 {
     public enum Title
     {

@@ -10,10 +10,10 @@
 *
 *=============================================================================
 */
-using TheCodeKing.AutoBuilder.Base;
-using TheCodeKing.AutoBuilder.Core;
+using AutoObjectBuilder.Base;
+using AutoObjectBuilder.Core;
 
-namespace TheCodeKing.AutoBuilder.Interfaces
+namespace AutoObjectBuilder.Interfaces
 {
     public interface IAutoExpression<T> : IAutoConfigurationBase<AutoExpression<T>>
     {

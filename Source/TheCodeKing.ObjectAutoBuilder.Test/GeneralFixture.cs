@@ -1,7 +1,8 @@
-﻿using TheCodeKing.AutoBuilder.Test.Base;
+﻿using AutoObjectBuilder;
 using NUnit.Framework;
+using ObjectAutoBuilder.Test.Base;
 
-namespace TheCodeKing.AutoBuilder.Test
+namespace ObjectAutoBuilder.Test
 {
     [TestFixture]
     public class GeneralFixture : TestFixtureBase

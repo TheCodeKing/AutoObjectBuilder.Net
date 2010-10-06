@@ -8,8 +8,8 @@
     <ProjectGuid>{1F676C1B-87E4-4E3A-894A-668F698D5E9D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CodeKing.ObjectAutoBuilder.Test</RootNamespace>
-    <AssemblyName>CodeKing.ObjectAutoBuilder.Test</AssemblyName>
+    <RootNamespace>ObjectAutoBuilder.Test</RootNamespace>
+    <AssemblyName>ObjectAutoBuilder.Test</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>

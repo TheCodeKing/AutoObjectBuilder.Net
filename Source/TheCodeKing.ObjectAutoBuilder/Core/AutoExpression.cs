@@ -13,19 +13,19 @@
 using System;
 using System.Linq.Expressions;
 using System.Reflection;
-using TheCodeKing.AutoBuilder.Interfaces;
+using AutoObjectBuilder.Interfaces;
 
-namespace TheCodeKing.AutoBuilder.Core
+namespace AutoObjectBuilder.Core
 {
     public class AutoExpression<T> : IAutoExpression<T>
     {
-        private readonly IAutoObjectBuilder builder;
+        private readonly IAutoBuilder builder;
         private readonly IAutoConfigurationResolver configuration;
         private bool intiailized;
         private T obj;
 
-        internal AutoExpression(Func<IAutoConfigurationResolver, Func<IAutoConfigurationResolver, IAutoObjectBuilder, IObjectParser, IAutoFiller>, IAutoObjectBuilder> builderFactory,
-            Func<IAutoConfigurationResolver, IAutoObjectBuilder, IObjectParser, IAutoFiller> filler,
+        internal AutoExpression(Func<IAutoConfigurationResolver, Func<IAutoConfigurationResolver, IAutoBuilder, IObjectParser, IAutoFiller>, IAutoBuilder> builderFactory,
+            Func<IAutoConfigurationResolver, IAutoBuilder, IObjectParser, IAutoFiller> filler,
             IAutoConfigurationResolver configuration)
         {
             builder = builderFactory(configuration, filler);

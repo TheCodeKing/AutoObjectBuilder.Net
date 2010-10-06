@@ -13,7 +13,7 @@
 using System;
 using System.Reflection;
 
-namespace TheCodeKing.AutoBuilder.Interfaces
+namespace AutoObjectBuilder.Interfaces
 {
     internal interface IAutoConfigurationResolver : IDefaultAutoConfiguration
     {

@@ -15,18 +15,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
-using TheCodeKing.AutoBuilder.Extensions;
-using TheCodeKing.AutoBuilder.Interfaces;
+using AutoObjectBuilder.Extensions;
+using AutoObjectBuilder.Interfaces;
 
-namespace TheCodeKing.AutoBuilder.Core
+namespace AutoObjectBuilder.Core
 {
-    internal class AutoObjectBuilder : IAutoObjectBuilder
+    internal class AutoBuilder : IAutoBuilder
     {
         private readonly IDictionary<string, object> cache = new Dictionary<string, object>();
         private readonly IAutoConfigurationResolver configuration;
         private readonly IAutoFiller filler;
 
-        internal AutoObjectBuilder(IAutoConfigurationResolver configuration, Func<IAutoConfigurationResolver, IAutoObjectBuilder, IObjectParser, IAutoFiller> filler, IObjectParser parser)
+        internal AutoBuilder(IAutoConfigurationResolver configuration, Func<IAutoConfigurationResolver, IAutoBuilder, IObjectParser, IAutoFiller> filler, IObjectParser parser)
         {
             this.filler = filler(configuration, this, parser);
             this.configuration = configuration;
