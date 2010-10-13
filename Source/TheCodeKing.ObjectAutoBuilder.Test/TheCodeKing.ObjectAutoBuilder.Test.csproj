@@ -45,8 +45,12 @@
   <ItemGroup>
     <Compile Include="APIFixture.cs" />
     <Compile Include="ConflictPersonFixture.cs" />
+    <Compile Include="Helper\IPerson.cs" />
+    <Compile Include="InternalPersonFixture.cs" />
     <Compile Include="GeneralFixture.cs" />
     <Compile Include="Helper\ConflictPerson.cs" />
+    <Compile Include="Helper\InternalPerson.cs" />
+    <Compile Include="InterfacePersonFixture.cs" />
     <Compile Include="StringFixture.cs" />
     <Compile Include="Helper\ImpossiblePerson.cs" />
     <Compile Include="Helper\PrivatePerson.cs" />

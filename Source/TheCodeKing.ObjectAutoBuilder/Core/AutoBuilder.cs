@@ -24,12 +24,15 @@ namespace AutoObjectBuilder.Core
     {
         private readonly IDictionary<string, object> cache = new Dictionary<string, object>();
         private readonly IAutoConfigurationResolver configuration;
+        private readonly IAutoBuilder interfaceBuilder;
         private readonly IAutoFiller filler;
 
-        internal AutoBuilder(IAutoConfigurationResolver configuration, Func<IAutoConfigurationResolver, IAutoBuilder, IObjectParser, IAutoFiller> filler, IObjectParser parser)
+        internal AutoBuilder(IAutoConfigurationResolver configuration, Func<IAutoConfigurationResolver, IAutoBuilder, IObjectParser, IAutoFiller> filler,
+            IObjectParser parser, IAutoBuilder interfaceBuilder)
         {
             this.filler = filler(configuration, this, parser);
             this.configuration = configuration;
+            this.interfaceBuilder = interfaceBuilder;
         }
 
         #region IAutoBuilder Members
@@ -80,29 +83,45 @@ namespace AutoObjectBuilder.Core
         {
             if (type.IsInterface)
             {
-                return null;
+                // TODO: remove this try/catch when functionally complete
+                try
+                {
+                    return interfaceBuilder.CreateObject(type);
+                }
+                catch {}
             }
 
+            // try public constructors
             var arr = type.GetConstructors().Where(c => ConstructorDoesNotContainType(c, type)).Select(p => p).ToArray();
-            if (arr.Length == 0)
+            if (arr.Length != 0)
             {
-                arr =
-                    type.GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic).Where(
-                        c => ConstructorDoesNotContainType(c, type)).Select(p => p).ToArray();
-                if (arr.Length == 0)
+                // try construct using least parameters
+                var info = arr.OrderBy(o => o.GetParameters().Length).ElementAtOrDefault(0);
+                if (info != null)
                 {
-                    return FormatterServices.GetUninitializedObject(type);
+                    var pArr = info.GetParameters();
+                    var args = pArr.Select(p => CreateObject(p.ParameterType)).ToArray();
+                    return info.Invoke(args);
                 }
             }
-            // try object with least parameters
-            var info = arr.OrderBy(o => o.GetParameters().Length).ElementAtOrDefault(0);
-            if (info == null || info.GetParameters().Length == 0)
+
+            // try non-public constructors
+            arr = type.GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic).Where(
+                        c => ConstructorDoesNotContainType(c, type)).Select(p => p).ToArray();
+            if (arr.Length != 0)
             {
-                return Activator.CreateInstance(type);
+                // try construct using least parameters
+                var info = arr.OrderBy(o => o.GetParameters().Length).ElementAtOrDefault(0);
+                if (info != null)
+                {
+                    var pArr = info.GetParameters();
+                    var args = pArr.Select(p => CreateObject(p.ParameterType)).ToArray();
+                    return info.Invoke(args);
+                }
             }
-            var pArr = info.GetParameters();
-            var args = pArr.Select(p => CreateObject(p.ParameterType)).ToArray();
-            return info.Invoke(args);
+
+            // initialize without constructor
+            return FormatterServices.GetUninitializedObject(type);
         }
 
         private static bool ConstructorDoesNotContainType(ConstructorInfo info, Type type)
