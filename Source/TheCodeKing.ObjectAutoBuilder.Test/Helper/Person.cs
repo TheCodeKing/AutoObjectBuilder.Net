@@ -38,6 +38,8 @@ namespace ObjectAutoBuilder.Test.Helper
                               };
         }
 
+        public string[] Array { get; set; }
+        public IEnumerable<int> Enumerable { get; set; }
         public int Readonly { get { return -1; }}
         public int IntId { get; set; }
         public uint UIntId { get; set; }
@@ -67,6 +69,12 @@ namespace ObjectAutoBuilder.Test.Helper
 
         private Person Hidden { get; set; }
         public Person Father { get; set; }
+
+        private int indexer;
+        public int this[string index] { 
+            get { return indexer; }
+            set { indexer = value; }
+        }
 
         #region IEquatable<Person> Members
 
@@ -101,6 +109,9 @@ namespace ObjectAutoBuilder.Test.Helper
                    && ATitleEnum == other.ATitleEnum
                    && FirstName == other.FirstName
                    && LastName == other.LastName
+                   && this["string"] == other["string"]
+                   && Array == other.Array 
+                   && Enumerable == other.Enumerable
                    && Hidden == null ? other.Hidden == null : Hidden.Equals(other.Hidden)
                                                               && Mother == null ? other.Mother == null : Mother.Equals(other.Mother)
                                                                                                          && Father == null ? other.Father == null : Father.Equals(other.Father);
@@ -137,7 +148,14 @@ namespace ObjectAutoBuilder.Test.Helper
             hash ^= ATitleEnum.GetHashCode();
             hash ^= FirstName.GetHashCode();
             hash ^= LastName.GetHashCode();
-
+            if (Array!=null)
+            {
+                hash ^= Array.GetHashCode();
+            }
+            if (Enumerable != null)
+            {
+                hash ^= Enumerable.GetHashCode();
+            }
             if (Father!=null)
             {
                 hash ^= Father.GetHashCode();

@@ -55,7 +55,7 @@ namespace AutoObjectBuilder.Core
             {
                 Type arg = type.GetGenericArguments().SingleOrDefault();
                 var item = builder.CreateObject(arg);
-                for (var i = 0; i < 2; i++)
+                for (var i = 0; i < config.EnumerableSize; i++)
                 {
                     addMethod.Invoke(o, new[] { item });
                 }
@@ -64,7 +64,7 @@ namespace AutoObjectBuilder.Core
             {
                 var pArr = addMethod.GetParameters();
                 var args = pArr.Select(p => builder.CreateObject(p.ParameterType)).ToArray();
-                for (var i = 0; i < 2; i++)
+                for (var i = 0; i < config.EnumerableSize; i++)
                 {
                     addMethod.Invoke(o, args);
                 }
@@ -96,7 +96,13 @@ namespace AutoObjectBuilder.Core
                     {
                         if (propType.IsAssignableFrom(value.GetType()))
                         {
-                            p.SetPropertyOrFieldValue(o, value, null);
+                            object[] args = null; 
+                            if (p is PropertyInfo)
+                            {
+                                var property = p as PropertyInfo;
+                                args = property.GetIndexParameters().Select(pp => builder.CreateObject(pp.ParameterType)).ToArray();
+                            }
+                            p.SetPropertyOrFieldValue(o, value, args);
                         }
                         else if (!propType.IsAssignableFrom(value.GetType()))
                         {

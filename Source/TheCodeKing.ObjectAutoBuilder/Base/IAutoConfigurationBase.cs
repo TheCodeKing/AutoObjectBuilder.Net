@@ -27,5 +27,6 @@ namespace AutoObjectBuilder.Base
         T Min();
         T Default();
         T Empty();
+        T EnumerableSize(int count);
     }
 }

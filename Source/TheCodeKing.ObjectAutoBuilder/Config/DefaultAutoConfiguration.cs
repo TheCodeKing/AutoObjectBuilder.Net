@@ -29,7 +29,8 @@ namespace AutoObjectBuilder.Config
                 .Factory(new Uri("http://uri/"))
                 .Setter(m => new Uri("http://" + m.Name.ToLowerInvariant()))
                 .Setter(m => m.Name)
-                .Max();
+                .Max()
+                .EnumerableSize(2);
         }
 
         protected override void RegisterFactory(Type type, Func<Type, object> factory)

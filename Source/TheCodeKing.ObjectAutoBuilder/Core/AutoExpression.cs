@@ -100,7 +100,13 @@ namespace AutoObjectBuilder.Core
             configuration.Empty();
             return this;
         }
-        
+
+        public AutoExpression<T> EnumerableSize(int count)
+        {
+            configuration.EnumerableSize(count);
+            return this;
+        }
+
         #endregion
 
         public static implicit operator T(AutoExpression<T> exp)

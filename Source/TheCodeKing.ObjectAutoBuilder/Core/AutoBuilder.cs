@@ -44,6 +44,15 @@ namespace AutoObjectBuilder.Core
 
         public object CreateObject(Type type)
         {
+            if (type.IsOfRawGenericTypeDefinition(typeof(IEnumerable<>)))
+            {
+                return CreateArrayObject(type.GetGenericArguments()[0]);
+            }
+
+            if (type.IsArray)
+            {
+                return CreateArrayObject(type.GetElementType());
+            }
             var f = configuration.GetFactory(type);
             if (f != null)
             {
@@ -58,6 +67,21 @@ namespace AutoObjectBuilder.Core
                 }
             }
             return GetNewObject(type) ?? type.GetDefault();
+        }
+
+        private object CreateArrayObject(Type type)
+        { 
+            if (type == null)
+            {
+                return null;
+            }
+            var o = CreateObject(type);
+            var arr = Array.CreateInstance(type, configuration.EnumerableSize);
+            for (var i = 0; i < arr.Length; i++)
+            {
+                arr.SetValue(o, i);
+            }
+            return arr;
         }
 
         #endregion
@@ -83,12 +107,7 @@ namespace AutoObjectBuilder.Core
         {
             if (type.IsInterface)
             {
-                // TODO: remove this try/catch when functionally complete
-                try
-                {
-                    return interfaceBuilder.CreateObject(type);
-                }
-                catch {}
+                return interfaceBuilder.CreateObject(type);
             }
 
             // try public constructors

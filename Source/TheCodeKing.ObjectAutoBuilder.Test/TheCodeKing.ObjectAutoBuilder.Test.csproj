@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="APIFixture.cs" />
     <Compile Include="ConflictPersonFixture.cs" />
+    <Compile Include="ArrayFixture.cs" />
     <Compile Include="Helper\IPerson.cs" />
     <Compile Include="InternalPersonFixture.cs" />
     <Compile Include="GeneralFixture.cs" />

@@ -261,5 +261,13 @@ namespace ObjectAutoBuilder.Test
             Assert.That(person7.LastName, Is.EqualTo("T9"));
             Assert.That(person8.LastName, Is.EqualTo("TEST"));
         }
+
+        [Test]
+        public void T17()
+        {
+            Person person = Auto.Make<Person>();
+
+            Assert.That(person["test"], Is.EqualTo(int.MaxValue));
+        }
     }
 }

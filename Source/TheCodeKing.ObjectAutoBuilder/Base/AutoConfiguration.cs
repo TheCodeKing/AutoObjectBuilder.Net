@@ -29,6 +29,8 @@ namespace AutoObjectBuilder.Base
         private readonly IDictionary<string, Func<MemberInfo, object>> resolverDictionary =
             new Dictionary<string, Func<MemberInfo, object>>();
 
+        private int? enumerableSize;
+
         internal AutoConfiguration()
         {
         }
@@ -56,6 +58,19 @@ namespace AutoObjectBuilder.Base
             resolverDictionary[key] = resolver;
         }
 
+        int IAutoConfigurationResolver.EnumerableSize
+        {
+            get
+            {
+                int? value = enumerableSize;
+                if (value == null && configuration != null)
+                {
+                    value = configuration.EnumerableSize;
+                }
+                return (value ?? 0);
+            }
+        }
+        
         Func<Type, object> IAutoConfigurationResolver.GetFactory(Type type, bool cascade = true)
         {
             var key = type.CreateKey();
@@ -231,6 +246,12 @@ namespace AutoObjectBuilder.Base
             Factory(string.Empty)
                 .Factory<Uri>((Uri)null)
                 .Setter<Uri>(m => null);
+            return this;
+        }
+
+        public IAutoConfiguration EnumerableSize(int count)
+        {
+            enumerableSize = count;
             return this;
         }
     }
