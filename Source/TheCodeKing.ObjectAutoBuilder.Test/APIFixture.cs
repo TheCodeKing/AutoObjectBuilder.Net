@@ -1,4 +1,6 @@
-﻿using AutoObjectBuilder;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using AutoObjectBuilder;
 using NUnit.Framework;
 using ObjectAutoBuilder.Test.Base;
 using ObjectAutoBuilder.Test.Helper;
@@ -76,6 +78,64 @@ namespace ObjectAutoBuilder.Test
                 .Min();
 
             Assert.That(person.IntId, Is.EqualTo(int.MinValue));
+        }
+
+        [Test]
+        public void T8()
+        {
+            // create an interface instance, use .Object as implicit cast does not work
+            // with interface types
+            IPerson person = Auto.Make<IPerson>().Object;
+
+            Assert.That(person, Is.Not.Null);
+            Assert.That(person.FirstName, Is.EqualTo("FirstName"));
+        }
+
+        [Test]
+        public void T9()
+        {
+            // create an Array type, populated with a defined number of items
+            IPerson[] person = Auto.Make<IPerson[]>().EnumerableSize(10);
+
+            Assert.That(person, Is.Not.Null);
+            Assert.That(person.Length, Is.EqualTo(10));
+        }
+
+        [Test]
+        public void T10()
+        {
+            // create an List type, populated with a defined number of items
+            IList<IPerson> person = Auto.Make<IList<IPerson>>().EnumerableSize(10).Object;
+
+            Assert.That(person, Is.Not.Null);
+            Assert.That(person.Count, Is.EqualTo(10));
+        }
+
+        [Test]
+        public void T11()
+        {
+            // create an Collection type, populated with a defined number of items
+            ICollection<IPerson> person = Auto.Make<ICollection<IPerson>>().EnumerableSize(10).Object;
+
+            Assert.That(person, Is.Not.Null);
+            Assert.That(person.Count, Is.EqualTo(10));
+        }
+
+        [Test]
+        public void T12()
+        {
+            // create an Collection type, populated with a defined number of items
+            IEnumerable<IPerson> person = Auto.Make<IEnumerable<IPerson>>().EnumerableSize(10).Object;
+
+            Assert.That(person, Is.Not.Null);
+
+            int count =0;
+            foreach(var p in person)
+            {
+                count++;
+                Assert.That(p, Is.Not.Null);   
+            }
+            Assert.That(count, Is.EqualTo(10));
         }
     }
 }

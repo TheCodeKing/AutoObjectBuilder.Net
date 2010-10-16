@@ -12,6 +12,7 @@
 */
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
@@ -44,6 +45,17 @@ namespace AutoObjectBuilder.Core
 
         public object CreateObject(Type type)
         {
+            if (type.IsOfRawGenericTypeDefinition(typeof(IList<>)))
+            {
+                type = typeof(List<>).MakeGenericType(type.GetGenericArguments()[0]);
+                return CreateObject(type);
+            }
+            if (type.IsOfRawGenericTypeDefinition(typeof(ICollection<>)))
+            {
+                type = typeof(Collection<>).MakeGenericType(type.GetGenericArguments()[0]);
+                return CreateObject(type);
+            }
+
             if (type.IsOfRawGenericTypeDefinition(typeof(IEnumerable<>)))
             {
                 return CreateArrayObject(type.GetGenericArguments()[0]);
