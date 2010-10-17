@@ -137,5 +137,26 @@ namespace ObjectAutoBuilder.Test
             }
             Assert.That(count, Is.EqualTo(10));
         }
+
+        [Test]
+        public void T13()
+        {
+            // create an Collection type, populated with a defined number of items
+            IDictionary<string, IPerson> peopleLookups = Auto.Make<IDictionary<string, IPerson>>().EnumerableSize(10).Object;
+
+            Assert.That(peopleLookups, Is.Not.Null);
+            // only one item due to dictionary key
+            Assert.That(peopleLookups.Count, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void T14()
+        {
+            // create an Collection type, populated with a defined number of items
+            IDictionary<int, IPerson> peopleLookups = Auto.Make<IDictionary<int, IPerson>>().EnumerableSize(0).Object;
+
+            Assert.That(peopleLookups, Is.Not.Null);
+            Assert.That(peopleLookups.Count, Is.EqualTo(0));
+        }
     }
 }

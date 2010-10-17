@@ -41,9 +41,27 @@ namespace AutoObjectBuilder.Core
             {
                 FillCollection(o);
             }
+            else if (type.IsOfRawGenericTypeDefinition(typeof(Dictionary<,>)))
+            {
+                FillDictionary(o);
+            }
             else
             {
                 FillInstance(o);
+            }
+        }
+
+        private void FillDictionary(object o)
+        {
+            if (config.EnumerableSize > 0)
+            {
+                var type = o.GetType();
+                MethodInfo addMethod = type.GetMethod("Add");
+                var args = type.GetGenericArguments();
+
+                var key = builder.CreateObject(args[0]);
+                var value = builder.CreateObject(args[1]);
+                addMethod.Invoke(o, new[] {key, value});
             }
         }
 

@@ -45,9 +45,16 @@ namespace AutoObjectBuilder.Core
 
         public object CreateObject(Type type)
         {
+            if (type.IsOfRawGenericTypeDefinition(typeof(IDictionary<,>)))
+            {
+                var args = type.GetGenericArguments();
+                type = typeof(Dictionary<,>).MakeGenericType(args);
+                return CreateObject(type);
+            }
+
             if (type.IsOfRawGenericTypeDefinition(typeof(IList<>)))
             {
-                type = typeof(List<>).MakeGenericType(type.GetGenericArguments()[0]);
+                type = typeof(List<>).MakeGenericType(type.GetGenericArguments());
                 return CreateObject(type);
             }
             if (type.IsOfRawGenericTypeDefinition(typeof(ICollection<>)))

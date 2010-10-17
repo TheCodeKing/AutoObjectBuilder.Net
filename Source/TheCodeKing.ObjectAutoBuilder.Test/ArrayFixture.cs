@@ -44,28 +44,46 @@ namespace ObjectAutoBuilder.Test
         [Test]
         public void T4()
         {
-            Person[] person = Auto.Make<Person[]>().EnumerableSize(0);
+            IPerson[] people = Auto.Make<IPerson[]>().EnumerableSize(0);
 
-            Assert.That(person, Is.Not.Null);
-            Assert.That(person.Length, Is.EqualTo(0));
+            Assert.That(people, Is.Not.Null);
+            Assert.That(people.Length, Is.EqualTo(0));
         }
 
         [Test]
         public void T5()
         {
-            Person[] person = Auto.Make<Person[]>().EnumerableSize(1);
+            Person[] people = Auto.Make<Person[]>().EnumerableSize(1);
 
-            Assert.That(person, Is.Not.Null);
-            Assert.That(person.Length, Is.EqualTo(1));
-            Assert.That(person[0].FirstName, Is.EqualTo("FirstName"));
+            Assert.That(people, Is.Not.Null);
+            Assert.That(people.Length, Is.EqualTo(1));
+            Assert.That(people[0].FirstName, Is.EqualTo("FirstName"));
         }
 
         [Test]
         public void T6()
         {
-            IEnumerable<int> person = Auto.Make<IEnumerable<int>>().EnumerableSize(1).Object;
+            IEnumerable<int> value = Auto.Make<IEnumerable<int>>().EnumerableSize(1).Object;
 
-            Assert.That(person, Is.Not.Null);
+            Assert.That(value, Is.Not.Null);
+        }
+
+        [Test]
+        public void T7()
+        {
+            IList<IPerson> people = Auto.Make<IList<IPerson>>().EnumerableSize(1).Object;
+
+            Assert.That(people, Is.Not.Null);
+            Assert.That(people.Count, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void T8()
+        {
+            ICollection<IPerson> people = Auto.Make<ICollection<IPerson>>().EnumerableSize(1).Object;
+
+            Assert.That(people, Is.Not.Null);
+            Assert.That(people.Count, Is.EqualTo(1));
         }
     }
 }
