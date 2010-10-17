@@ -1,5 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿/*=============================================================================
+*
+*	(C) Copyright 2010, Michael Carlisle (mike.carlisle@thecodeking.co.uk)
+*
+*   http://www.TheCodeKing.co.uk
+*  
+*	All rights reserved.
+*	The code and information is provided "as-is" without waranty of any kind,
+*	either expressed or implied.
+*
+*=============================================================================
+*/
+using System;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -122,8 +133,6 @@ namespace AutoObjectBuilder.Core
 
         private void BuildPropertyStub(PropertyInfo property, TypeBuilder typeBuilder)
         {
-            const MethodAttributes ma = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.SpecialName | MethodAttributes.Virtual;
-            
             FieldBuilder fieldBuilder = typeBuilder.DefineField(string.Format("<{0}>k__BackingField", property.Name), property.PropertyType, FieldAttributes.Private);
             PropertyBuilder propertyBuilder = typeBuilder.DefineProperty(property.Name, PropertyAttributes.HasDefault, property.PropertyType, property.GetRequiredCustomModifiers());
 
