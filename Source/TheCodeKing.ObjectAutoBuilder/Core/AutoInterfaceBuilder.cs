@@ -21,6 +21,16 @@ namespace AutoObjectBuilder.Core
 {
     public class AutoInterfaceBuilder : IAutoBuilder
     {
+
+        private static readonly MethodInfo makeMethod = typeof(Auto).GetMethod(
+                   "Make",
+                   BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic,
+                   null,
+                   new Type[]{
+                        },
+                   null
+                   );
+
         private readonly ConstructorInfo notImplCtor = typeof(NotImplementedException).GetConstructor(
             BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
             null,
@@ -52,7 +62,7 @@ namespace AutoObjectBuilder.Core
             var assemblyName = new AssemblyName("AutoObjectBuilder.Proxy");
             var appDomain = Thread.GetDomain();
             var assemblyBuilder = appDomain.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.RunAndSave);
-            var moduleBuilder = assemblyBuilder.DefineDynamicModule(assemblyName.Name);
+            var moduleBuilder = assemblyBuilder.DefineDynamicModule(assemblyName.Name, assemblyName.Name+".dll");
             var typeBuilder = moduleBuilder.DefineType("Impl" + type.Name, TypeAttributes.Public | TypeAttributes.Class);
             typeBuilder.DefineDefaultConstructor(MethodAttributes.Public);
             typeBuilder.AddInterfaceImplementation(type);
@@ -70,6 +80,7 @@ namespace AutoObjectBuilder.Core
                 BuildPropertyStub(property, typeBuilder);
             }
             var dType = typeBuilder.CreateType();
+            assemblyBuilder.Save(assemblyName.Name+".dll");
             return dType;
         }
 
@@ -86,14 +97,21 @@ namespace AutoObjectBuilder.Core
             }
             else
             {
-                // Preparing locals
-                ilg.DeclareLocal(methodInfo.ReturnType);
-                // Preparing labels
-                ilg.DefineLabel();
+                MethodInfo method1 = makeMethod.MakeGenericMethod(method.ReturnType);
+
+                MethodInfo method2 = typeof(AutoExpression<>).MakeGenericType(method.ReturnType).GetMethod(
+                    "get_Object",
+                    BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
+                    null,
+                    new Type[]{},
+                    null
+                    );
+                // Adding parameters
+                ILGenerator gen = method.GetILGenerator();
                 // Writing body
-                ilg.Emit(OpCodes.Nop);
-                ilg.Emit(OpCodes.Newobj, notImplCtor);
-                ilg.Emit(OpCodes.Throw);
+                gen.Emit(OpCodes.Call, method1);
+                gen.Emit(OpCodes.Callvirt, method2);
+                gen.Emit(OpCodes.Ret);
             }
         }
 

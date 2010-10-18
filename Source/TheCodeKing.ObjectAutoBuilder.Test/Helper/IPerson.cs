@@ -33,7 +33,7 @@ namespace ObjectAutoBuilder.Test.Helper
 
         TR GenericMethod<T, TR>(string arg1, T arg2);
 
-        string BasicMethod(string arg1);
+        string BasicMethod(int arg1);
 
         int this[string arg1, int arg2] { get; set; }
     }

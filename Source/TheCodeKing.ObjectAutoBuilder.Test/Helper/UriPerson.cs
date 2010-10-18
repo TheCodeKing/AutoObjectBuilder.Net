@@ -1,4 +1,5 @@
 ﻿using System;
+using AutoObjectBuilder;
 
 namespace ObjectAutoBuilder.Test.Helper
 {
