@@ -61,7 +61,7 @@ namespace AutoObjectBuilder.Core
         {
             var assemblyName = new AssemblyName("AutoObjectBuilder.Proxy");
             var appDomain = Thread.GetDomain();
-            var assemblyBuilder = appDomain.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.RunAndSave);
+            var assemblyBuilder = appDomain.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run);
             var moduleBuilder = assemblyBuilder.DefineDynamicModule(assemblyName.Name, assemblyName.Name+".dll");
             var typeBuilder = moduleBuilder.DefineType("Impl" + type.Name, TypeAttributes.Public | TypeAttributes.Class);
             typeBuilder.DefineDefaultConstructor(MethodAttributes.Public);
@@ -80,7 +80,6 @@ namespace AutoObjectBuilder.Core
                 BuildPropertyStub(property, typeBuilder);
             }
             var dType = typeBuilder.CreateType();
-            assemblyBuilder.Save(assemblyName.Name+".dll");
             return dType;
         }
 
