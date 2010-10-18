@@ -62,7 +62,7 @@ namespace AutoObjectBuilder.Core
             var assemblyName = new AssemblyName("AutoObjectBuilder.Proxy");
             var appDomain = Thread.GetDomain();
             var assemblyBuilder = appDomain.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run);
-            var moduleBuilder = assemblyBuilder.DefineDynamicModule(assemblyName.Name, assemblyName.Name+".dll");
+            var moduleBuilder = assemblyBuilder.DefineDynamicModule(assemblyName.Name);
             var typeBuilder = moduleBuilder.DefineType("Impl" + type.Name, TypeAttributes.Public | TypeAttributes.Class);
             typeBuilder.DefineDefaultConstructor(MethodAttributes.Public);
             typeBuilder.AddInterfaceImplementation(type);
