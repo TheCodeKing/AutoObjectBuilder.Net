@@ -19,10 +19,10 @@ using AutoObjectBuilder.Interfaces;
 
 namespace AutoObjectBuilder.Core
 {
-    public class AutoInterfaceBuilder : IAutoBuilder
+    public class AutoProxyBuilder : IAutoBuilder
     {
 
-        private static readonly MethodInfo makeMethod = typeof(Auto).GetMethod(
+        private static readonly MethodInfo MakeMethod = typeof(Auto).GetMethod(
                    "Make",
                    BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic,
                    null,
@@ -31,7 +31,7 @@ namespace AutoObjectBuilder.Core
                    null
                    );
 
-        private readonly ConstructorInfo notImplCtor = typeof(NotImplementedException).GetConstructor(
+        private static readonly ConstructorInfo NotImplCtor = typeof(NotImplementedException).GetConstructor(
             BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
             null,
             new Type[]{},
@@ -45,9 +45,9 @@ namespace AutoObjectBuilder.Core
 
         public object CreateObject(Type type)
         {
-            if (!type.IsInterface)
+            if (!type.IsInterface && !type.IsAbstract)
             {
-                throw new NotSupportedException("Only interfaces are supported.");
+                throw new NotSupportedException("Only interfaces and abstract classes are supported.");
             }
             type = CreateProxyType(type);
             if (type == null)
@@ -57,7 +57,7 @@ namespace AutoObjectBuilder.Core
             return Activator.CreateInstance(type);
         }
 
-        private Type CreateProxyType(Type type)
+        private static Type CreateProxyType(Type type)
         {
             var assemblyName = new AssemblyName("AutoObjectBuilder.Proxy");
             var appDomain = Thread.GetDomain();
@@ -65,11 +65,18 @@ namespace AutoObjectBuilder.Core
             var moduleBuilder = assemblyBuilder.DefineDynamicModule(assemblyName.Name);
             var typeBuilder = moduleBuilder.DefineType("Impl" + type.Name, TypeAttributes.Public | TypeAttributes.Class);
             typeBuilder.DefineDefaultConstructor(MethodAttributes.Public);
-            typeBuilder.AddInterfaceImplementation(type);
+            if (type.IsInterface)
+            {
+                typeBuilder.AddInterfaceImplementation(type);
+            } 
+            else if (type.IsAbstract)
+            {
+                typeBuilder.SetParent(type);
+            }
 
             foreach (var method in type.GetMethods())
             {
-                if (!method.IsSpecialName)
+                if (!method.IsSpecialName && method.IsVirtual)
                 {
                     BuildMethodStub(method, typeBuilder);
                 }
@@ -83,7 +90,7 @@ namespace AutoObjectBuilder.Core
             return dType;
         }
 
-        private void BuildMethodStub(MethodInfo methodInfo, TypeBuilder type)
+        private static void BuildMethodStub(MethodInfo methodInfo, TypeBuilder type)
         {
             MethodBuilder method = GetMethodDefinition(type, methodInfo);
 
@@ -91,12 +98,12 @@ namespace AutoObjectBuilder.Core
             if (methodInfo.ReturnType.Equals(typeof(void)))
             {
                 ilg.Emit(OpCodes.Nop);
-                ilg.Emit(OpCodes.Newobj, notImplCtor);
+                ilg.Emit(OpCodes.Newobj, NotImplCtor);
                 ilg.Emit(OpCodes.Throw);
             }
             else
             {
-                MethodInfo method1 = makeMethod.MakeGenericMethod(method.ReturnType);
+                MethodInfo method1 = MakeMethod.MakeGenericMethod(method.ReturnType);
 
                 MethodInfo method2 = typeof(AutoExpression<>).MakeGenericType(method.ReturnType).GetMethod(
                     "get_Object",
@@ -112,9 +119,14 @@ namespace AutoObjectBuilder.Core
                 gen.Emit(OpCodes.Callvirt, method2);
                 gen.Emit(OpCodes.Ret);
             }
+
+            if (methodInfo.IsAbstract)
+            {
+                type.DefineMethodOverride(method, methodInfo);
+            }
         }
 
-        private MethodBuilder GetMethodDefinition(TypeBuilder type, MethodInfo methodInfo)
+        private static MethodBuilder GetMethodDefinition(TypeBuilder type, MethodInfo methodInfo)
         {
             const MethodAttributes methodAttributes =
                 MethodAttributes.Public
@@ -148,12 +160,12 @@ namespace AutoObjectBuilder.Core
             return method;
         }
 
-        private void BuildPropertyStub(PropertyInfo property, TypeBuilder typeBuilder)
+        private static void BuildPropertyStub(PropertyInfo property, TypeBuilder typeBuilder)
         {
             FieldBuilder fieldBuilder = typeBuilder.DefineField(string.Format("<{0}>k__BackingField", property.Name), property.PropertyType, FieldAttributes.Private);
             PropertyBuilder propertyBuilder = typeBuilder.DefineProperty(property.Name, PropertyAttributes.HasDefault, property.PropertyType, property.GetRequiredCustomModifiers());
 
-            if (property.CanWrite)
+            if (property.CanWrite && (property.ReflectedType.IsInterface || property.GetSetMethod().IsVirtual))
             {
                 MethodInfo interfaceMethod = property.ReflectedType.GetMethod(string.Format("set_{0}", property.Name));
                 MethodBuilder methbSet = GetMethodDefinition(typeBuilder, interfaceMethod);
@@ -178,7 +190,7 @@ namespace AutoObjectBuilder.Core
                 typeBuilder.DefineMethodOverride(methbSet, interfaceMethod);
             }
 
-            if (property.CanRead)
+            if (property.CanRead && (property.ReflectedType.IsInterface || property.GetGetMethod().IsVirtual))
             {
                 MethodInfo interfaceMethod = property.ReflectedType.GetMethod(string.Format("get_{0}", property.Name));
                 MethodBuilder methbGet = GetMethodDefinition(typeBuilder, interfaceMethod);

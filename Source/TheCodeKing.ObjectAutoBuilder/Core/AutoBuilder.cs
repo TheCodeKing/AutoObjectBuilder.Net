@@ -124,7 +124,7 @@ namespace AutoObjectBuilder.Core
 
         private object CreateNewObject(Type type)
         {
-            if (type.IsInterface)
+            if (type.IsInterface || type.IsAbstract)
             {
                 return interfaceBuilder.CreateObject(type);
             }

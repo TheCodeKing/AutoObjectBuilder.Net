@@ -12,8 +12,8 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
 [assembly: Guid("3fd2cf57-1905-4ce7-acd2-ca735d95ab07")]
-[assembly: AssemblyVersion("0.9.0.5")]
-[assembly: AssemblyFileVersion("0.9.0.5")]
+[assembly: AssemblyVersion("0.9.0.6")]
+[assembly: AssemblyFileVersion("0.9.0.6")]
 [assembly: AssemblyDelaySign(false)]
 #if SIGN
 [assembly: AssemblyKeyFile(@"..\..\..\thecodeking.snk")]
