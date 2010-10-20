@@ -11,6 +11,7 @@
 *=============================================================================
 */
 using System;
+using System.IO;
 using AutoObjectBuilder.Base;
 
 namespace AutoObjectBuilder.Config
@@ -27,6 +28,11 @@ namespace AutoObjectBuilder.Config
             base.UseDefaultConfiguration();
             Factory("string")
                 .Factory(new Uri("http://uri/"))
+                .Factory(new FileInfo(@"C:\filename"))
+                .Factory(new DirectoryInfo(@"C:\directoryname"))
+                .Factory(IntPtr.Zero)
+                .Setter(m => new FileInfo(@"C:\" + m.Name.ToLowerInvariant()))
+                .Setter(t => new DirectoryInfo(@"C:\" + t.Name.ToLowerInvariant()))
                 .Setter(m => new Uri("http://" + m.Name.ToLowerInvariant()))
                 .Setter(m => m.Name)
                 .Max()

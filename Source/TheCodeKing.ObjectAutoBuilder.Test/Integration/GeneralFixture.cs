@@ -1,4 +1,5 @@
-﻿using AutoObjectBuilder;
+﻿using System.Net;
+using AutoObjectBuilder;
 using NUnit.Framework;
 using ObjectAutoBuilder.Test.Base;
 
@@ -79,6 +80,12 @@ namespace ObjectAutoBuilder.Test
             string s2 = Auto.Make<string>().Min();
 
             Assert.That(s2, Is.EqualTo("string"));
+        }
+
+        [Test]
+        public void T6()
+        {
+            ServicePoint request = Auto.Make<ServicePoint>();
         }
     }
 }

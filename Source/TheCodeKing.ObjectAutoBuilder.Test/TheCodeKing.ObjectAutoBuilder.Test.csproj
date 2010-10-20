@@ -43,30 +43,33 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="APIFixture.cs" />
-    <Compile Include="ConflictPersonFixture.cs" />
-    <Compile Include="ArrayFixture.cs" />
-    <Compile Include="AbstractPersonFixture.cs" />
+    <Compile Include="Helper\InernalAbstractPerson.cs" />
+    <Compile Include="Integration\APIFixture.cs" />
+    <Compile Include="Integration\ConflictPersonFixture.cs" />
+    <Compile Include="Integration\ArrayFixture.cs" />
+    <Compile Include="Integration\AbstractPersonFixture.cs" />
     <Compile Include="Helper\AbstractPerson.cs" />
+    <Compile Include="Helper\SystemInfoTest.cs" />
     <Compile Include="Helper\IPerson.cs" />
-    <Compile Include="InternalPersonFixture.cs" />
-    <Compile Include="GeneralFixture.cs" />
+    <Compile Include="Integration\SystemInfoFixture.cs" />
+    <Compile Include="Integration\InternalPersonFixture.cs" />
+    <Compile Include="Integration\GeneralFixture.cs" />
     <Compile Include="Helper\ConflictPerson.cs" />
     <Compile Include="Helper\InternalPerson.cs" />
-    <Compile Include="InterfacePersonFixture.cs" />
-    <Compile Include="StringFixture.cs" />
+    <Compile Include="Integration\InterfacePersonFixture.cs" />
+    <Compile Include="Integration\StringFixture.cs" />
     <Compile Include="Helper\ImpossiblePerson.cs" />
     <Compile Include="Helper\PrivatePerson.cs" />
     <Compile Include="Helper\UriPerson.cs" />
-    <Compile Include="PersonConstructFixture.cs" />
-    <Compile Include="EnumFixture.cs" />
+    <Compile Include="Integration\PersonConstructFixture.cs" />
+    <Compile Include="Integration\EnumFixture.cs" />
     <Compile Include="Helper\ComplexPerson.cs" />
-    <Compile Include="PersonFixture.cs" />
+    <Compile Include="Integration\PersonFixture.cs" />
     <Compile Include="Base\TestFixtureBase.cs" />
-    <Compile Include="IntFixture.cs" />
+    <Compile Include="Integration\IntFixture.cs" />
     <Compile Include="Helper\Person.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UriFixture.cs" />
+    <Compile Include="Integration\UriFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TheCodeKing.ObjectAutoBuilder\TheCodeKing.ObjectAutoBuilder.csproj">

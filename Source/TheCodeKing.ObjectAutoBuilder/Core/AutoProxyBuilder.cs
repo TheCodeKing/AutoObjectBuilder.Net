@@ -19,9 +19,8 @@ using AutoObjectBuilder.Interfaces;
 
 namespace AutoObjectBuilder.Core
 {
-    public class AutoProxyBuilder : IAutoBuilder
+    internal class AutoProxyBuilder : IAutoBuilder
     {
-
         private static readonly MethodInfo MakeMethod = typeof(Auto).GetMethod(
                    "Make",
                    BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic,
@@ -74,7 +73,7 @@ namespace AutoObjectBuilder.Core
                 typeBuilder.SetParent(type);
             }
 
-            foreach (var method in type.GetMethods())
+            foreach (var method in type.GetMethods(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance))
             {
                 if (!method.IsSpecialName && method.IsVirtual)
                 {
@@ -82,12 +81,18 @@ namespace AutoObjectBuilder.Core
                 }
             }
 
-            foreach (var property in type.GetProperties())
+            foreach (var property in type.GetProperties(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance))
             {
                 BuildPropertyStub(property, typeBuilder);
             }
-            var dType = typeBuilder.CreateType();
-            return dType;
+            try
+            {
+                return typeBuilder.CreateType();
+            }
+            catch (TypeLoadException)
+            {
+                return null;
+            }
         }
 
         private static void BuildMethodStub(MethodInfo methodInfo, TypeBuilder type)
@@ -103,21 +108,8 @@ namespace AutoObjectBuilder.Core
             }
             else
             {
-                MethodInfo method1 = MakeMethod.MakeGenericMethod(method.ReturnType);
-
-                MethodInfo method2 = typeof(AutoExpression<>).MakeGenericType(method.ReturnType).GetMethod(
-                    "get_Object",
-                    BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
-                    null,
-                    new Type[]{},
-                    null
-                    );
-                // Adding parameters
-                ILGenerator gen = method.GetILGenerator();
-                // Writing body
-                gen.Emit(OpCodes.Call, method1);
-                gen.Emit(OpCodes.Callvirt, method2);
-                gen.Emit(OpCodes.Ret);
+                // return an Auto.Make instance of the return value
+                CreateAutoMakeImplementation(method);
             }
 
             if (methodInfo.IsAbstract)
@@ -165,12 +157,16 @@ namespace AutoObjectBuilder.Core
             FieldBuilder fieldBuilder = typeBuilder.DefineField(string.Format("<{0}>k__BackingField", property.Name), property.PropertyType, FieldAttributes.Private);
             PropertyBuilder propertyBuilder = typeBuilder.DefineProperty(property.Name, PropertyAttributes.HasDefault, property.PropertyType, property.GetRequiredCustomModifiers());
 
-            if (property.CanWrite && (property.ReflectedType.IsInterface || property.GetSetMethod().IsVirtual))
-            {
-                MethodInfo interfaceMethod = property.ReflectedType.GetMethod(string.Format("set_{0}", property.Name));
-                MethodBuilder methbSet = GetMethodDefinition(typeBuilder, interfaceMethod);
+            bool canCreateWrite = property.CanWrite &&
+                                         (property.ReflectedType.IsInterface || property.GetSetMethod(true).IsVirtual);
 
-                ILGenerator ilg = methbSet.GetILGenerator();
+            // if the property has an overridable setter, then wire up to a backing field
+            if (canCreateWrite)
+            {
+                MethodInfo interfaceMethod = property.GetSetMethod(true);
+                MethodBuilder methodSet = GetMethodDefinition(typeBuilder, interfaceMethod);
+
+                ILGenerator ilg = methodSet.GetILGenerator();
 
                 if (interfaceMethod.GetParameters().Length > 1)
                 {
@@ -186,23 +182,55 @@ namespace AutoObjectBuilder.Core
                 ilg.Emit(OpCodes.Stfld, fieldBuilder);
                 ilg.Emit(OpCodes.Ret);
 
-                propertyBuilder.SetSetMethod(methbSet);
-                typeBuilder.DefineMethodOverride(methbSet, interfaceMethod);
+                propertyBuilder.SetSetMethod(methodSet);
+                typeBuilder.DefineMethodOverride(methodSet, interfaceMethod);
             }
 
-            if (property.CanRead && (property.ReflectedType.IsInterface || property.GetGetMethod().IsVirtual))
+            bool canCreateRead = property.CanRead &&
+                                    (property.ReflectedType.IsInterface || property.GetGetMethod(true).IsVirtual);
+            
+            // if the property has an overridable setter, and getter then wire up to backing field
+            if (canCreateWrite && canCreateRead)
             {
-                MethodInfo interfaceMethod = property.ReflectedType.GetMethod(string.Format("get_{0}", property.Name));
-                MethodBuilder methbGet = GetMethodDefinition(typeBuilder, interfaceMethod);
+                MethodInfo interfaceMethod = property.GetGetMethod(true);
+                MethodBuilder methodGet = GetMethodDefinition(typeBuilder, interfaceMethod);
 
-                ILGenerator ilg = methbGet.GetILGenerator();
+                ILGenerator ilg = methodGet.GetILGenerator();
                 ilg.Emit(OpCodes.Ldarg_0);
                 ilg.Emit(OpCodes.Ldfld, fieldBuilder);
                 ilg.Emit(OpCodes.Ret);
 
-                propertyBuilder.SetGetMethod(methbGet);
-                typeBuilder.DefineMethodOverride(methbGet, interfaceMethod);
+                propertyBuilder.SetGetMethod(methodGet);
+                typeBuilder.DefineMethodOverride(methodGet, interfaceMethod);
             }
+            // if only the property getter can be overriden then hook this up to an Auto.Make instance
+            else if (canCreateRead)
+            {
+                MethodInfo interfaceMethod = property.GetGetMethod();
+                MethodBuilder methodGet = GetMethodDefinition(typeBuilder, interfaceMethod);
+
+                CreateAutoMakeImplementation(methodGet);
+                typeBuilder.DefineMethodOverride(methodGet, interfaceMethod);
+            }
+        }
+
+        private static void CreateAutoMakeImplementation(MethodBuilder methodBuilder)
+        {
+            MethodInfo method1 = MakeMethod.MakeGenericMethod(methodBuilder.ReturnType);
+
+            MethodInfo method2 = typeof(AutoExpression<>).MakeGenericType(methodBuilder.ReturnType).GetMethod(
+                "get_Object",
+                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
+                null,
+                new Type[] { },
+                null
+                );
+            // Adding parameters
+            ILGenerator gen = methodBuilder.GetILGenerator();
+            // Writing body
+            gen.Emit(OpCodes.Call, method1);
+            gen.Emit(OpCodes.Callvirt, method2);
+            gen.Emit(OpCodes.Ret);
         }
     }
 }

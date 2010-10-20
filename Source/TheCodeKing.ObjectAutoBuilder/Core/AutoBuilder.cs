@@ -89,7 +89,7 @@ namespace AutoObjectBuilder.Core
         }
 
         private object CreateArrayObject(Type type)
-        { 
+        {
             if (type == null)
             {
                 return null;
@@ -107,20 +107,29 @@ namespace AutoObjectBuilder.Core
 
         private object GetNewObject(Type type)
         {
-             var key = type.CreateKey();
-             object item;
-             if (cache.TryGetValue(key, out item))
-             {
-                 return item;
-             }
-             var o = CreateNewObject(type);
-             if (o != null)
-             {
-                 cache[key] = o;
-                 filler.FillObject(o);
-             }
-             return o;
-         }
+            var key = type.CreateKey();
+            object item;
+            if (cache.TryGetValue(key, out item))
+            {
+                return item;
+            }
+            object o;
+            try
+            {
+                o = CreateNewObject(type);
+            }
+            catch (TargetInvocationException)
+            {
+                o = null;
+            }
+
+            if (o != null)
+            {
+                cache[key] = o;
+                filler.FillObject(o);
+            }
+            return o;
+        }
 
         private object CreateNewObject(Type type)
         {
@@ -164,7 +173,8 @@ namespace AutoObjectBuilder.Core
 
         private static bool ConstructorDoesNotContainType(ConstructorInfo info, Type type)
         {
-            return info.GetParameters().ToList().Find(p => p.ParameterType == type) == null;
+            // savoid recursion and avoid initializing objects with Pointers (can cause unhandled exceptions)
+            return info.GetParameters().ToList().Find(p => p.ParameterType == type || p.ParameterType == typeof(IntPtr)) == null;
         }
 
     }

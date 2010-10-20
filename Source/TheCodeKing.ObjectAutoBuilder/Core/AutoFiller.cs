@@ -20,7 +20,7 @@ using AutoObjectBuilder.Interfaces;
 
 namespace AutoObjectBuilder.Core
 {
-    public class AutoFiller : IAutoFiller
+    internal class AutoFiller : IAutoFiller
     {
         private readonly IAutoBuilder builder;
         private readonly IObjectParser parser;
@@ -120,7 +120,14 @@ namespace AutoObjectBuilder.Core
                                 var property = p as PropertyInfo;
                                 args = property.GetIndexParameters().Select(pp => builder.CreateObject(pp.ParameterType)).ToArray();
                             }
-                            p.SetPropertyOrFieldValue(o, value, args);
+                            try
+                            {
+                                p.SetPropertyOrFieldValue(o, value, args);
+                            }
+                            catch (TargetInvocationException)
+                            {
+                                
+                            }
                         }
                         else if (!propType.IsAssignableFrom(value.GetType()))
                         {

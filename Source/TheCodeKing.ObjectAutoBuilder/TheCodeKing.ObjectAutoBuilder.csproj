@@ -47,7 +47,9 @@
     <Compile Include="Core\AutoBuilder.cs" />
     <Compile Include="Core\AutoFiller.cs" />
     <Compile Include="Base\IAutoConfigurationBase.cs" />
-    <Compile Include="Core\AutoProxyBuilder.cs" />
+    <Compile Include="Core\AutoProxyBuilder.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Interfaces\IAutoConfiguration.cs" />
     <Compile Include="Interfaces\IDefaultAutoConfiguration.cs" />
     <Compile Include="Interfaces\IObjectParser.cs" />

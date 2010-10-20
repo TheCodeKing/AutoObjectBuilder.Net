@@ -1,4 +1,5 @@
-﻿using AutoObjectBuilder;
+﻿using System.Net;
+using AutoObjectBuilder;
 using NUnit.Framework;
 using ObjectAutoBuilder.Test.Base;
 using ObjectAutoBuilder.Test.Helper;
@@ -57,7 +58,7 @@ namespace ObjectAutoBuilder.Test
             var i = person.Readonly;
 
             Assert.That(person, Is.Not.Null);
-            Assert.That(i, Is.EqualTo(0));
+            Assert.That(i, Is.EqualTo(int.MaxValue));
         }
 
         [Test]
@@ -68,6 +69,22 @@ namespace ObjectAutoBuilder.Test
 
             Assert.That(person, Is.Not.Null);
             Assert.That(i, Is.Null);
+        }
+
+        [Test]
+        public void T7()
+        {
+            AbstractPerson person = Auto.Make<AbstractPerson>();
+            var i = person.NonAbstractIntId;
+
+            Assert.That(i, Is.EqualTo(0));
+        }
+
+        [Test]
+        public void T8()
+        {
+            InernalAbstractPerson person = Auto.Make<InernalAbstractPerson>();
+            Assert.That(person, Is.Null);
         }
     }
 }
