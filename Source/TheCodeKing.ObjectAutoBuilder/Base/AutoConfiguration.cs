@@ -71,7 +71,7 @@ namespace AutoObjectBuilder.Base
             }
         }
         
-        Func<Type, object> IAutoConfigurationResolver.GetFactory(Type type, bool cascade = true)
+        Func<Type, object> IAutoConfigurationResolver.GetFactory(Type type, bool cascade)
         {
             var key = type.CreateKey();
             Func<Type, object> value;
@@ -86,7 +86,7 @@ namespace AutoObjectBuilder.Base
             return null;
         }
 
-        Func<MemberInfo, object> IAutoConfigurationResolver.ResolveMemberByName(MemberInfo prop, Type type, bool cascade = true)
+        Func<MemberInfo, object> IAutoConfigurationResolver.ResolveMemberByName(MemberInfo prop, Type type, bool cascade)
         {
             var key = type.CreateKey(prop.Name);
             Func<MemberInfo, object> value;
@@ -221,7 +221,7 @@ namespace AutoObjectBuilder.Base
         public IAutoConfiguration Empty()
         {
             With(string.Empty)
-                .With<Uri>((Uri)null)
+                .With((Uri)null)
                 .Setter<Uri>(m => null);
             return this;
         }

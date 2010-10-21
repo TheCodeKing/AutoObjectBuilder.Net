@@ -11,11 +11,8 @@
 *=============================================================================
 */
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using AutoObjectBuilder.Base;
-using AutoObjectBuilder.Extensions;
 
 namespace AutoObjectBuilder.Config
 {

@@ -8,7 +8,7 @@ namespace ObjectAutoBuilder.Test.Integration
     [TestFixture]
     public class ObjectBuilderUseByValFixture : TestFixtureBase
     {
-        private int Compare
+        private static int Compare
         {
             get { return 1354; }
         }

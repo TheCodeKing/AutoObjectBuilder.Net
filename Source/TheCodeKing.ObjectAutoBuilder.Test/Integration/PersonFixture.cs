@@ -209,8 +209,6 @@ namespace ObjectAutoBuilder.Test.Integration
         [Test]
         public void T8()
         {
-            var p = Person.PersonTest1;
-
             Person person = Auto.Make<Person>().With(100);
 
             Assert.That(person, Is.Not.Null);
@@ -220,13 +218,13 @@ namespace ObjectAutoBuilder.Test.Integration
         [Test]
         public void T9()
         {
-            int i = 0;
-            Auto.Configure.With(() => new Person { FirstName = "Test" + (i++) });
+            int[] i = {0};
+            Auto.Configure.With(() => new Person { FirstName = "Test" + (i[0]++) });
 
             Person person1 = Auto.Make<Person>();
             Person person2 = Auto.Make<Person>();
             Person person3 = Auto.Make<Person>()
-                .With(() => new Person { FirstName = "Test" + (i++) });
+                .With(() => new Person { FirstName = "Test" + (i[0]++) });
 
             Person person4 = Auto.Make<Person>()
                 .With(Compare);

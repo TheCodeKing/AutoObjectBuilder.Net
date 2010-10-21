@@ -7,7 +7,7 @@ using ObjectAutoBuilder.Test.Helper;
 namespace ObjectAutoBuilder.Test.Integration
 {
     [TestFixture]
-    public class APIFixture : TestFixtureBase
+    public class ApiFixture : TestFixtureBase
     {
         [Test]
         public void T1()

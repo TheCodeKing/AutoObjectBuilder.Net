@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ObjectAutoBuilder.Test.Helper
+﻿namespace ObjectAutoBuilder.Test.Helper
 {
     public abstract class AbstractPerson
     {

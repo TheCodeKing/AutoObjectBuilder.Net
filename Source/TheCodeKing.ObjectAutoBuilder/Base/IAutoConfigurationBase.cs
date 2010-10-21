@@ -16,7 +16,7 @@ using System.Reflection;
 
 namespace AutoObjectBuilder.Base
 {
-    public interface IAutoConfigurationBase<T>
+    public interface IAutoConfigurationBase<out T>
     {
         T With<TTarget>(TTarget value);
         T With<TTarget>(Func<TTarget> factory);

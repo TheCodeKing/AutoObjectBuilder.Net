@@ -2,6 +2,7 @@
 {
    public class ImpossiblePerson : Person
    {
+       private readonly ImpossiblePerson person;
        private readonly bool isConstructed;
 
        public bool IsContructed
@@ -11,7 +12,8 @@
 
        public ImpossiblePerson(ImpossiblePerson person)
        {
+           this.person = person;
            isConstructed = true;
        }
-    }
+   }
 }
