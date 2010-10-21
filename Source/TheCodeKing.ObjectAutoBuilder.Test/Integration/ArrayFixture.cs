@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using AutoObjectBuilder;
 using NUnit.Framework;
 using ObjectAutoBuilder.Test.Base;
 using ObjectAutoBuilder.Test.Helper;
 
-namespace ObjectAutoBuilder.Test
+namespace ObjectAutoBuilder.Test.Integration
 {
     [TestFixture]
     public class ArrayFixture : TestFixtureBase
@@ -16,7 +15,7 @@ namespace ObjectAutoBuilder.Test
             string[] p = Auto.Make<string[]>();
 
             Assert.That(p, Is.Not.Null);
-            Assert.That(p.Length, Is.EqualTo(2));
+            Assert.That(p.Length, Is.EqualTo(10));
             Assert.That(p[0], Is.EqualTo("string"));
             Assert.That(p[1], Is.EqualTo("string"));
         }

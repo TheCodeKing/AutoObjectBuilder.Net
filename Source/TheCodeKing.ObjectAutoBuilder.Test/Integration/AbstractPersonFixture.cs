@@ -1,10 +1,9 @@
-﻿using System.Net;
-using AutoObjectBuilder;
+﻿using AutoObjectBuilder;
 using NUnit.Framework;
 using ObjectAutoBuilder.Test.Base;
 using ObjectAutoBuilder.Test.Helper;
 
-namespace ObjectAutoBuilder.Test
+namespace ObjectAutoBuilder.Test.Integration
 {
     [TestFixture]
     public class AbstractPersonFixture : TestFixtureBase
@@ -85,6 +84,22 @@ namespace ObjectAutoBuilder.Test
         {
             InernalAbstractPerson person = Auto.Make<InernalAbstractPerson>();
             Assert.That(person, Is.Null);
+        }
+
+        [Test]
+        public void T9()
+        {
+            Auto.Configure.With(5);
+
+            AbstractPerson person = Auto.Make<AbstractPerson>().Min();
+            var i = person.Readonly;
+
+            Assert.That(person, Is.Not.Null);
+            Assert.That(person.IntId, Is.EqualTo(int.MinValue));
+
+            // readonly proxy methods don't respect instance config, but do respect
+            // global config
+            Assert.That(i, Is.EqualTo(5));
         }
     }
 }

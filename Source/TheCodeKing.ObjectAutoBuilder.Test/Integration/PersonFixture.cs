@@ -3,7 +3,7 @@ using NUnit.Framework;
 using ObjectAutoBuilder.Test.Base;
 using ObjectAutoBuilder.Test.Helper;
 
-namespace ObjectAutoBuilder.Test
+namespace ObjectAutoBuilder.Test.Integration
 {
     [TestFixture]
     public class PersonFixture : TestFixtureBase
@@ -17,7 +17,7 @@ namespace ObjectAutoBuilder.Test
         {
             var p = Person.PersonTest1;
 
-            Auto.Configure.Factory(p);
+            Auto.Configure.With(p);
 
             Person person = Auto.Make<Person>();
 
@@ -38,7 +38,7 @@ namespace ObjectAutoBuilder.Test
         public void T10()
         {
             int i = 0;
-            Auto.Configure.Factory(() => new Person { FirstName = "Test" + (i++) });
+            Auto.Configure.With(() => new Person { FirstName = "Test" + (i++) });
 
             Person person1 = Auto.Make<Person>();
 
@@ -55,8 +55,8 @@ namespace ObjectAutoBuilder.Test
         public void T11()
         {
             Person person = Auto.Make<Person>()
-                .Factory("TEST")
-                .Factory(10)
+                .With("TEST")
+                .With(10)
                 .Set<Person>(o => o.FirstName, "hello");
 
             Assert.That(person.FirstName, Is.EqualTo("hello"));
@@ -86,7 +86,7 @@ namespace ObjectAutoBuilder.Test
         public void T13()
         {
             Person person = Auto.Make<Person>()
-                .Factory(Compare);
+                .With(Compare);
 
             Assert.That(person == Compare, Is.True);
 
@@ -101,7 +101,7 @@ namespace ObjectAutoBuilder.Test
         [Test]
         public void T14()
         {
-            Person person = Auto.Make<Person>().Factory(() => new Person { FirstName = "TEST1" });
+            Person person = Auto.Make<Person>().With(() => new Person { FirstName = "TEST1" });
 
             Assert.That(person, Is.Not.Null);
             Assert.That(person.FirstName, Is.EqualTo("TEST1"));
@@ -134,7 +134,7 @@ namespace ObjectAutoBuilder.Test
         [Test]
         public void T16()
         {
-            Auto.Configure.Factory("T16");
+            Auto.Configure.With("T16");
 
             Person person = Auto.Make<Person>()
                 .Set<Person>(o => o.FirstName, "hello");
@@ -187,7 +187,7 @@ namespace ObjectAutoBuilder.Test
         {
             var p = Person.PersonTest1;
 
-            Auto.Configure.Factory(p);
+            Auto.Configure.With(p);
 
             Person person = Auto.Make<Person>();
 
@@ -200,7 +200,7 @@ namespace ObjectAutoBuilder.Test
         {
             var p = Person.PersonTest1;
 
-            Person person = Auto.Make<Person>().Factory(p);
+            Person person = Auto.Make<Person>().With(p);
 
             Assert.That(person, Is.Not.Null);
             Assert.That(person, Is.EqualTo(p));
@@ -211,7 +211,7 @@ namespace ObjectAutoBuilder.Test
         {
             var p = Person.PersonTest1;
 
-            Person person = Auto.Make<Person>().Factory(100);
+            Person person = Auto.Make<Person>().With(100);
 
             Assert.That(person, Is.Not.Null);
             Assert.That(person.IntId, Is.EqualTo(100));
@@ -221,15 +221,15 @@ namespace ObjectAutoBuilder.Test
         public void T9()
         {
             int i = 0;
-            Auto.Configure.Factory(() => new Person { FirstName = "Test" + (i++) });
+            Auto.Configure.With(() => new Person { FirstName = "Test" + (i++) });
 
             Person person1 = Auto.Make<Person>();
             Person person2 = Auto.Make<Person>();
             Person person3 = Auto.Make<Person>()
-                .Factory(() => new Person { FirstName = "Test" + (i++) });
+                .With(() => new Person { FirstName = "Test" + (i++) });
 
             Person person4 = Auto.Make<Person>()
-                .Factory(Compare);
+                .With(Compare);
 
             Auto.Configure.UseDefaultConfiguration();
 
@@ -237,17 +237,17 @@ namespace ObjectAutoBuilder.Test
                 .Set<Person>(o => o.FirstName, "hello");
 
             Person person6 = Auto.Make<Person>()
-                .Factory("TEST")
-                .Factory(10)
+                .With("TEST")
+                .With(10)
                 .Set<Person>(o => o.FirstName, "hello");
 
-            Auto.Configure.Factory("T9");
+            Auto.Configure.With("T9");
 
             Person person7 = Auto.Make<Person>()
                 .Set<Person>(o => o.FirstName, "hello");
 
             Person person8 = Auto.Make<Person>()
-                .Factory("TEST")
+                .With("TEST")
                 .Set<Person>(o => o.FirstName, "hello");
 
             Assert.That(person1.FirstName, Is.EqualTo("Test0"));

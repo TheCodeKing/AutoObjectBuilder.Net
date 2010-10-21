@@ -3,7 +3,7 @@ using NUnit.Framework;
 using ObjectAutoBuilder.Test.Base;
 using ObjectAutoBuilder.Test.Helper;
 
-namespace ObjectAutoBuilder.Test
+namespace ObjectAutoBuilder.Test.Integration
 {
     [TestFixture]
     public class ObjectBuilderUseByValFixture : TestFixtureBase
@@ -16,7 +16,7 @@ namespace ObjectAutoBuilder.Test
         [Test]
         public void T1()
         {
-            Auto.Configure.Factory(Compare);
+            Auto.Configure.With(Compare);
 
             int val = Auto.Make<int>();
 
@@ -26,7 +26,7 @@ namespace ObjectAutoBuilder.Test
         [Test]
         public void T2()
         {
-            int val = Auto.Make<int>().Factory(Compare);
+            int val = Auto.Make<int>().With(Compare);
 
             Assert.That(val, Is.EqualTo(Compare));
         }
@@ -34,11 +34,11 @@ namespace ObjectAutoBuilder.Test
         [Test]
         public void T3()
         {
-            Auto.Configure.Factory(-1);
+            Auto.Configure.With(-1);
 
-            int val = Auto.Make<int>().Factory(Compare);
+            int val = Auto.Make<int>().With(Compare);
 
-            Auto.Configure.Factory(-1);
+            Auto.Configure.With(-1);
 
             Assert.That(val, Is.EqualTo(Compare));
         }
@@ -46,7 +46,7 @@ namespace ObjectAutoBuilder.Test
         [Test]
         public void T4()
         {
-            int val = Auto.Make<int>().Factory(-1).Factory(Compare);
+            int val = Auto.Make<int>().With(-1).With(Compare);
 
             Assert.That(val, Is.EqualTo(Compare));
         }
@@ -54,7 +54,7 @@ namespace ObjectAutoBuilder.Test
         [Test]
         public void T5()
         {
-            int val = Auto.Make<int>().Factory(Compare).Factory(-1);
+            int val = Auto.Make<int>().With(Compare).With(-1);
 
             Assert.That(val, Is.EqualTo(-1));
         }
@@ -64,7 +64,7 @@ namespace ObjectAutoBuilder.Test
         {
             int i = 100;
 
-            Auto.Configure.Factory(() => i++);
+            Auto.Configure.With(() => i++);
             int val1 = Auto.Make<int>(); 
             int val2 = Auto.Make<int>();
             int val3 = Auto.Make<int>();
@@ -79,7 +79,7 @@ namespace ObjectAutoBuilder.Test
         {
             int i = 100;
 
-            Auto.Configure.Factory(() => i++);
+            Auto.Configure.With(() => i++);
             int val1 = Auto.Make<int>();
             int val2 = Auto.Make<int>();
 
@@ -91,7 +91,7 @@ namespace ObjectAutoBuilder.Test
         public void T8()
         {
             Person person = Auto.Make<Person>()
-                .Factory(new Person()).Factory(Compare);
+                .With(new Person()).With(Compare);
 
             Assert.That(person.IntId, Is.EqualTo(0));
         }
@@ -100,7 +100,7 @@ namespace ObjectAutoBuilder.Test
         public void T9()
         {
             Person person = Auto.Make<Person>()
-                .Factory(Compare);
+                .With(Compare);
 
             Assert.That(person.IntId, Is.EqualTo(Compare));
         }

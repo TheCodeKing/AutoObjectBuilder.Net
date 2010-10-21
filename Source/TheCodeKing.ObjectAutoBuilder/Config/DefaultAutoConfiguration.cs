@@ -11,8 +11,11 @@
 *=============================================================================
 */
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using AutoObjectBuilder.Base;
+using AutoObjectBuilder.Extensions;
 
 namespace AutoObjectBuilder.Config
 {
@@ -26,17 +29,17 @@ namespace AutoObjectBuilder.Config
         public override void UseDefaultConfiguration()
         {
             base.UseDefaultConfiguration();
-            Factory("string")
-                .Factory(new Uri("http://uri/"))
-                .Factory(new FileInfo(@"C:\filename"))
-                .Factory(new DirectoryInfo(@"C:\directoryname"))
-                .Factory(IntPtr.Zero)
+            With("string")
+                .With(new Uri("http://uri/"))
+                .With(new FileInfo(@"C:\filename"))
+                .With(new DirectoryInfo(@"C:\directoryname"))
+                .With(IntPtr.Zero)
                 .Setter(m => new FileInfo(@"C:\" + m.Name.ToLowerInvariant()))
                 .Setter(t => new DirectoryInfo(@"C:\" + t.Name.ToLowerInvariant()))
                 .Setter(m => new Uri("http://" + m.Name.ToLowerInvariant()))
                 .Setter(m => m.Name)
                 .Max()
-                .EnumerableSize(2);
+                .EnumerableSize(10);
         }
 
         protected override void RegisterFactory(Type type, Func<Type, object> factory)

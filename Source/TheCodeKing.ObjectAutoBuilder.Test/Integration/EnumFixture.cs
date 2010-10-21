@@ -3,7 +3,7 @@ using NUnit.Framework;
 using ObjectAutoBuilder.Test.Base;
 using ObjectAutoBuilder.Test.Helper;
 
-namespace ObjectAutoBuilder.Test
+namespace ObjectAutoBuilder.Test.Integration
 {
     [TestFixture]
     public class EnumFixture : TestFixtureBase
@@ -36,7 +36,7 @@ namespace ObjectAutoBuilder.Test
         public void T4()
         {
             Title p = Auto.Make<Title>()
-                .Factory(Title.Mrs);
+                .With(Title.Mrs);
             Assert.That(p, Is.EqualTo(Title.Mrs));
         }
 
@@ -44,7 +44,7 @@ namespace ObjectAutoBuilder.Test
         public void T5()
         {
             Person p = Auto.Make<Person>()
-                .Factory(Title.Mrs);
+                .With(Title.Mrs);
 
             Assert.That(p.TitleEnum, Is.EqualTo(Title.Mrs));
         }

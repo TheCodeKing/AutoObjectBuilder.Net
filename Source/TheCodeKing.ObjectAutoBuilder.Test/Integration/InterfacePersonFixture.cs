@@ -1,10 +1,9 @@
-﻿using System.Reflection;
-using AutoObjectBuilder;
+﻿using AutoObjectBuilder;
 using NUnit.Framework;
 using ObjectAutoBuilder.Test.Base;
 using ObjectAutoBuilder.Test.Helper;
 
-namespace ObjectAutoBuilder.Test
+namespace ObjectAutoBuilder.Test.Integration
 {
     [TestFixture]
     public class InterfacePersonFixture : TestFixtureBase
@@ -36,6 +35,7 @@ namespace ObjectAutoBuilder.Test
             var i = person.GenericMethod<string, Person>("arg1", "arg2");
 
             Assert.That(person, Is.Not.Null);
+            Assert.That(person.FirstName, Is.EqualTo("FirstName"));
             Assert.That(i, Is.Not.Null);
             Assert.That(i.FirstName, Is.EqualTo("FirstName"));
         }
@@ -47,7 +47,24 @@ namespace ObjectAutoBuilder.Test
             var i = person.BasicMethod(1);
 
             Assert.That(person, Is.Not.Null);
+
             Assert.That(i, Is.Not.Null);
+            Assert.That(i, Is.EqualTo("string"));
+        }
+
+        [Test]
+        public void T5()
+        {
+            Auto.Configure.With("Global Config");
+
+            IPerson person = Auto.Make<IPerson>().With("Instance Config").Object;
+            var i = person.BasicMethod(1);
+
+            Assert.That(person, Is.Not.Null);
+            Assert.That(person.FirstName, Is.EqualTo("Instance Config"));
+
+            // methods return values do not respect instance config, but do obey global config
+            Assert.That(i, Is.EqualTo("Global Config"));
         }
     }
 }

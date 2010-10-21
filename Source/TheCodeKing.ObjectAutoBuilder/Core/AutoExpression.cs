@@ -47,21 +47,21 @@ namespace AutoObjectBuilder.Core
 
         #region IAutoExpression<T> Members
 
-        public AutoExpression<T> Factory<TTarget>(TTarget value)
+        public AutoExpression<T> With<TTarget>(TTarget value)
         {
-            configuration.Factory(value);
+            configuration.With(value);
             return this;
         }
 
-        public AutoExpression<T> Factory<TTarget>(Func<TTarget> factory)
+        public AutoExpression<T> With<TTarget>(Func<TTarget> factory)
         {
-            configuration.Factory(factory);
+            configuration.With(factory);
             return this;
         }
 
-        public AutoExpression<T> Factory<TTarget>(Func<Type, TTarget> factory)
+        public AutoExpression<T> With<TTarget>(Func<Type, TTarget> factory)
         {
-            configuration.Factory(factory);
+            configuration.With(factory);
             return this;
         }
 

@@ -18,9 +18,9 @@ namespace AutoObjectBuilder.Base
 {
     public interface IAutoConfigurationBase<T>
     {
-        T Factory<TTarget>(TTarget value);
-        T Factory<TTarget>(Func<TTarget> factory);
-        T Factory<TTarget>(Func<Type, TTarget> factory);
+        T With<TTarget>(TTarget value);
+        T With<TTarget>(Func<TTarget> factory);
+        T With<TTarget>(Func<Type, TTarget> factory);
         T Set<TTarget>(Expression<Func<TTarget, object>> expression, object value);
         T Setter<TTarget>(Func<MemberInfo, TTarget> setter);
         T Max();

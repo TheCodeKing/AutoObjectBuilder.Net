@@ -41,6 +41,7 @@ namespace ObjectAutoBuilder.Test.Helper
         public string[] Array { get; set; }
         public IEnumerable<int> Enumerable { get; set; }
         public int Readonly { get { return -1; }}
+        public bool Bool { get; set; }
         public int IntId { get; set; }
         public uint UIntId { get; set; }
         public long LongId { get; set; }
@@ -51,6 +52,7 @@ namespace ObjectAutoBuilder.Test.Helper
         public byte ByteId { get; set; }
         public char CharId { get; set; }
         public sbyte SByteId { get; set; }
+        public Boolean BoolRef { get; set; }
         public Char CharRef { get; set; }
         public Byte ByteRef { get; set; }
         public SByte SByteRef { get; set; } 
@@ -111,6 +113,8 @@ namespace ObjectAutoBuilder.Test.Helper
                    && LastName == other.LastName
                    && this["string"] == other["string"]
                    && Array == other.Array 
+                   && Bool == other.Bool
+                   && BoolRef == other.BoolRef
                    && Enumerable == other.Enumerable
                    && Hidden == null ? other.Hidden == null : Hidden.Equals(other.Hidden)
                                                               && Mother == null ? other.Mother == null : Mother.Equals(other.Mother)
@@ -148,6 +152,8 @@ namespace ObjectAutoBuilder.Test.Helper
             hash ^= ATitleEnum.GetHashCode();
             hash ^= FirstName.GetHashCode();
             hash ^= LastName.GetHashCode();
+            hash ^= Bool.GetHashCode();
+            hash ^= BoolRef.GetHashCode();
             if (Array!=null)
             {
                 hash ^= Array.GetHashCode();

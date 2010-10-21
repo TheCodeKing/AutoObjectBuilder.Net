@@ -2,11 +2,16 @@
 {
    public class ImpossiblePerson : Person
    {
-       public readonly bool IsContructed; 
+       private readonly bool isConstructed;
+
+       public bool IsContructed
+       {
+            get { return isConstructed; }
+       }
 
        public ImpossiblePerson(ImpossiblePerson person)
        {
-           IsContructed = true;
+           isConstructed = true;
        }
     }
 }

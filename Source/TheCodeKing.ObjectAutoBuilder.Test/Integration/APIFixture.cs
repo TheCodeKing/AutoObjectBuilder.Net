@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using AutoObjectBuilder;
 using NUnit.Framework;
 using ObjectAutoBuilder.Test.Base;
 using ObjectAutoBuilder.Test.Helper;
 
-namespace ObjectAutoBuilder.Test
+namespace ObjectAutoBuilder.Test.Integration
 {
     [TestFixture]
     public class APIFixture : TestFixtureBase
@@ -13,9 +12,9 @@ namespace ObjectAutoBuilder.Test
         [Test]
         public void T1()
         {
-            // Create explicitly by Type
+            // Create instance explicitly by Type
             string s = Auto.Make<string>()
-                .Factory("hello");
+                .With("hello");
 
             Assert.That(s, Is.EqualTo("hello"));
         }
@@ -23,9 +22,9 @@ namespace ObjectAutoBuilder.Test
         [Test]
         public void T2()
         {
-            // Create by member Type
+            // Create instance by Type
             Person person = Auto.Make<Person>()
-                .Factory(t => t.FullName);
+                .With(t => t.FullName);
 
             Assert.That(person.FirstName, Is.EqualTo("System.String"));
         }
@@ -33,7 +32,7 @@ namespace ObjectAutoBuilder.Test
         [Test]
         public void T3()
         {
-            // Set member using MemberInfo
+            // Set member using MemberInfo instance
             Person person = Auto.Make<Person>()
                 .Setter(m => m.Name+": A STRING");
 

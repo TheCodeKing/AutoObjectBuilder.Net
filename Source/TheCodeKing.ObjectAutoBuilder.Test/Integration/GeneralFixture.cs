@@ -1,9 +1,10 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using AutoObjectBuilder;
 using NUnit.Framework;
 using ObjectAutoBuilder.Test.Base;
 
-namespace ObjectAutoBuilder.Test
+namespace ObjectAutoBuilder.Test.Integration
 {
     [TestFixture]
     public class GeneralFixture : TestFixtureBase
@@ -25,7 +26,7 @@ namespace ObjectAutoBuilder.Test
 
         public void T2()
         {
-            Auto.Configure.Factory("Configure");
+            Auto.Configure.With("Configure");
 
             string s1 = Auto.Make<string>();
 
@@ -41,7 +42,7 @@ namespace ObjectAutoBuilder.Test
         public void T3()
         {
             string s1 = Auto.Make<string>()
-                .Factory("Instance");
+                .With("Instance");
 
             Assert.That(s1, Is.EqualTo("Instance"));
 
@@ -54,7 +55,7 @@ namespace ObjectAutoBuilder.Test
 
         public void T4()
         {
-            Auto.Configure.Factory("Instance");
+            Auto.Configure.With("Instance");
 
             string s1 = Auto.Make<string>();
 
@@ -69,7 +70,7 @@ namespace ObjectAutoBuilder.Test
 
         public void T5()
         {
-            Auto.Configure.Factory("Instance");
+            Auto.Configure.With("Instance");
 
             string s1 = Auto.Make<string>();
 
@@ -85,7 +86,19 @@ namespace ObjectAutoBuilder.Test
         [Test]
         public void T6()
         {
-            ServicePoint request = Auto.Make<ServicePoint>();
+            // try a random .Net class
+            HttpWebRequest request = Auto.Make<HttpWebRequest>();
+
+            Assert.That(request, Is.Not.Null);
+            Assert.That(request.Expect, Is.EqualTo("Expect"));
+            Assert.That(request.Headers, Is.Not.Null);
+            Assert.That(request.IfModifiedSince, Is.EqualTo(DateTime.MaxValue));
+            Assert.That(request.MaximumAutomaticRedirections, Is.EqualTo(int.MaxValue));
+            Assert.That(request.MaximumResponseHeadersLength, Is.EqualTo(int.MaxValue));
+            Assert.That(request.Pipelined, Is.EqualTo(true));
+            Assert.That(request.MediaType, Is.EqualTo("MediaType"));
         }
+
+
     }
 }

@@ -121,19 +121,19 @@ namespace AutoObjectBuilder.Base
             return null;
         }
 
-        public IAutoConfiguration Factory<TTarget>(TTarget value)
+        public IAutoConfiguration With<TTarget>(TTarget value)
         {
             RegisterFactory(typeof(TTarget), t => value);
             return this;
         }
 
-        public IAutoConfiguration Factory<TTarget>(Func<TTarget> factory)
+        public IAutoConfiguration With<TTarget>(Func<TTarget> factory)
         {
             RegisterFactory(typeof(TTarget), t => factory());
             return this;
         }
 
-        public IAutoConfiguration Factory<TTarget>(Func<Type, TTarget> factory)
+        public IAutoConfiguration With<TTarget>(Func<Type, TTarget> factory)
         {
             RegisterFactory(typeof(TTarget), t => factory(t));
             return this;
@@ -163,88 +163,65 @@ namespace AutoObjectBuilder.Base
 
         public IAutoConfiguration Max()
         {
-            Factory(int.MaxValue)
-                .Factory(uint.MaxValue)
-                .Factory(long.MaxValue)
-                .Factory(ulong.MaxValue)
-                .Factory(short.MaxValue)
-                .Factory(ushort.MaxValue)
-                .Factory(double.MaxValue)
-                .Factory(byte.MaxValue)
-                .Factory(char.MaxValue)
-                .Factory(Char.MaxValue)
-                .Factory(Byte.MaxValue)
-                .Factory(SByte.MaxValue)
-                .Factory(Int16.MaxValue)
-                .Factory(Int32.MaxValue)
-                .Factory(Int64.MaxValue)
-                .Factory(UInt16.MaxValue)
-                .Factory(UInt32.MaxValue)
-                .Factory(UInt64.MaxValue)
-                .Factory(DateTime.MaxValue)
-                .Factory(t => Enum.GetValues(t).Cast<Enum>().Last())
+            With(int.MaxValue)
+                .With(true)
+                .With(uint.MaxValue)
+                .With(long.MaxValue)
+                .With(ulong.MaxValue)
+                .With(short.MaxValue)
+                .With(ushort.MaxValue)
+                .With(double.MaxValue)
+                .With(sbyte.MaxValue)
+                .With(byte.MaxValue)
+                .With(char.MaxValue)
+                .With(DateTime.MaxValue)
+                .With(t => Enum.GetValues(t).Cast<Enum>().Last())
                 ;
             return this;
         }
 
         public IAutoConfiguration Min()
         {
-            Factory(int.MinValue)
-                .Factory(uint.MaxValue)
-                .Factory(long.MinValue)
-                .Factory(ulong.MinValue)
-                .Factory(short.MinValue)
-                .Factory(ushort.MinValue)
-                .Factory(double.MinValue)
-                .Factory(byte.MinValue)
-                .Factory(sbyte.MinValue)
-                .Factory(char.MinValue)
-                .Factory(Char.MinValue)
-                .Factory(Byte.MinValue)
-                .Factory(SByte.MinValue)
-                .Factory(Int16.MinValue)
-                .Factory(Int32.MinValue)
-                .Factory(Int64.MinValue)
-                .Factory(UInt16.MinValue)
-                .Factory(UInt32.MinValue)
-                .Factory(UInt64.MinValue)
-                .Factory(DateTime.MinValue)
-                .Factory(t => Enum.GetValues(t).Cast<Enum>().First())
+            With(int.MinValue)
+                .With(false)
+                .With(uint.MinValue)
+                .With(long.MinValue)
+                .With(ulong.MinValue)
+                .With(short.MinValue)
+                .With(ushort.MinValue)
+                .With(double.MinValue)
+                .With(byte.MinValue)
+                .With(sbyte.MinValue)
+                .With(char.MinValue)
+                .With(DateTime.MinValue)
+                .With(t => Enum.GetValues(t).Cast<Enum>().First())
                 ;
             return this;
         }
 
         public IAutoConfiguration Default()
         {
-            Factory(default(int))
-                .Factory(default(uint))
-                .Factory(default(long))
-                .Factory(default(ulong))
-                .Factory(default(short))
-                .Factory(default(ushort))
-                .Factory(default(double))
-                .Factory(default(byte))
-                .Factory(default(sbyte))
-                .Factory(default(char))
-                .Factory(default(Char))
-                .Factory(default(Byte))
-                .Factory(default(SByte))
-                .Factory(default(Int16))
-                .Factory(default(Int32))
-                .Factory(default(Int64))
-                .Factory(default(UInt16))
-                .Factory(default(UInt32))
-                .Factory(default(UInt64))
-                .Factory(default(DateTime))
-                .Factory(t => Enum.GetValues(t).Cast<Enum>().First())
+            With(default(int))
+                .With(default(bool))
+                .With(default(uint))
+                .With(default(long))
+                .With(default(ulong))
+                .With(default(short))
+                .With(default(ushort))
+                .With(default(double))
+                .With(default(byte))
+                .With(default(sbyte))
+                .With(default(char))
+                .With(default(DateTime))
+                .With(t => Enum.GetValues(t).Cast<Enum>().First())
                 ;
             return this;
         }
 
         public IAutoConfiguration Empty()
         {
-            Factory(string.Empty)
-                .Factory<Uri>((Uri)null)
+            With(string.Empty)
+                .With<Uri>((Uri)null)
                 .Setter<Uri>(m => null);
             return this;
         }

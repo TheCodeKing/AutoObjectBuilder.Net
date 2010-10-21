@@ -44,6 +44,8 @@ namespace ObjectAutoBuilder.Test.Base
             Assert.That(p.Int64Id, Is.EqualTo(default(Int64)));
             Assert.That(p.UInt64Id, Is.EqualTo(default(UInt64)));
             Assert.That(p.DateTime, Is.EqualTo(default(DateTime)));
+            Assert.That(p.Bool, Is.EqualTo(default(bool)));
+            Assert.That(p.BoolRef, Is.EqualTo(default(bool)));
         }
 
         protected void AssertMinValues(Person p)
@@ -69,6 +71,8 @@ namespace ObjectAutoBuilder.Test.Base
             Assert.That(p.Int64Id, Is.EqualTo(Int64.MinValue));
             Assert.That(p.UInt64Id, Is.EqualTo(UInt64.MinValue));
             Assert.That(p.DateTime, Is.EqualTo(DateTime.MinValue));
+            Assert.That(p.Bool, Is.EqualTo(false));
+            Assert.That(p.BoolRef, Is.EqualTo(false));
         }
 
         protected void AssertMaxValues(Person p)
@@ -94,6 +98,8 @@ namespace ObjectAutoBuilder.Test.Base
             Assert.That(p.Int64Id, Is.EqualTo(Int64.MaxValue));
             Assert.That(p.UInt64Id, Is.EqualTo(UInt64.MaxValue));
             Assert.That(p.DateTime, Is.EqualTo(DateTime.MaxValue));
+            Assert.That(p.Bool, Is.EqualTo(true));
+            Assert.That(p.BoolRef, Is.EqualTo(true));
         }
     }
 }

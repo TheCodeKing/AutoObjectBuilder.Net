@@ -3,7 +3,7 @@ using NUnit.Framework;
 using ObjectAutoBuilder.Test.Base;
 using ObjectAutoBuilder.Test.Helper;
 
-namespace ObjectAutoBuilder.Test
+namespace ObjectAutoBuilder.Test.Integration
 {
     [TestFixture]
     public class StringFixture : TestFixtureBase
@@ -40,7 +40,7 @@ namespace ObjectAutoBuilder.Test
         public void T2()
         {
             string p = Auto.Make<string>()
-                .Factory("Test")
+                .With("Test")
                 .Setter(m => m.Name);
 
             Assert.That(p, Is.EqualTo("Test"));
@@ -50,7 +50,7 @@ namespace ObjectAutoBuilder.Test
         public void T3()
         {
             Auto.Configure
-                .Factory("Test")
+                .With("Test")
                 .Setter(m => "Test"+m.Name);
 
             Person p = Auto.Make<Person>();
@@ -62,11 +62,11 @@ namespace ObjectAutoBuilder.Test
         public void T4()
         {
             Auto.Configure
-                .Factory("Config")
+                .With("Config")
                 .Setter(m => "Config"+m.Name);
 
             string p = Auto.Make<string>()
-                .Factory("Instance")
+                .With("Instance")
                 .Setter(m => "Instance" + m.Name);
 
             Assert.That(p, Is.EqualTo("Instance"));
@@ -76,15 +76,15 @@ namespace ObjectAutoBuilder.Test
         public void T5()
         {
             Auto.Configure
-                .Factory("Config")
+                .With("Config")
                 .Setter(m => "Config" + m.Name);
 
             Person p = Auto.Make<Person>()
-                .Factory("Instance")
+                .With("Instance")
                 .Setter(m => "Instance" + m.Name);
 
             string s = Auto.Make<string>()
-                .Factory("Instance")
+                .With("Instance")
                 .Setter(m => "Instance" + m.Name);
 
             Assert.That(s, Is.EqualTo("Instance"));
