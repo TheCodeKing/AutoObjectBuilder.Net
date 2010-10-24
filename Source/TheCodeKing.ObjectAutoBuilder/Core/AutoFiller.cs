@@ -53,7 +53,7 @@ namespace AutoObjectBuilder.Core
 
         private void FillDictionary(object o)
         {
-            if (config.EnumerableSize > 0)
+            if (config.GetEnumerableSize() > 0)
             {
                 var type = o.GetType();
                 MethodInfo addMethod = type.GetMethod("Add");
@@ -73,7 +73,7 @@ namespace AutoObjectBuilder.Core
             {
                 Type arg = type.GetGenericArguments().SingleOrDefault();
                 var item = builder.CreateObject(arg);
-                for (var i = 0; i < config.EnumerableSize; i++)
+                for (var i = 0; i < config.GetEnumerableSize(); i++)
                 {
                     addMethod.Invoke(o, new[] { item });
                 }
@@ -82,7 +82,7 @@ namespace AutoObjectBuilder.Core
             {
                 var pArr = addMethod.GetParameters();
                 var args = pArr.Select(p => builder.CreateObject(p.ParameterType)).ToArray();
-                for (var i = 0; i < config.EnumerableSize; i++)
+                for (var i = 0; i < config.GetEnumerableSize(); i++)
                 {
                     addMethod.Invoke(o, args);
                 }

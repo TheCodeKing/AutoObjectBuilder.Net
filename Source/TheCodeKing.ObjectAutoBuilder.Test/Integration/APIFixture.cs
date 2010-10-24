@@ -94,20 +94,20 @@ namespace ObjectAutoBuilder.Test.Integration
         public void T9()
         {
             // create an Array type, populated with a defined number of items
-            IPerson[] person = Auto.Make<IPerson[]>().EnumerableSize(10);
+            IPerson[] person = Auto.Make<IPerson[]>().EnumerableSize(5);
 
             Assert.That(person, Is.Not.Null);
-            Assert.That(person.Length, Is.EqualTo(10));
+            Assert.That(person.Length, Is.EqualTo(5));
         }
 
         [Test]
         public void T10()
         {
             // create an List type, populated with a defined number of items
-            IList<IPerson> person = Auto.Make<IList<IPerson>>().EnumerableSize(10).Object;
+            IList<IPerson> person = Auto.Make<IList<IPerson>>().EnumerableSize(5).Object;
 
             Assert.That(person, Is.Not.Null);
-            Assert.That(person.Count, Is.EqualTo(10));
+            Assert.That(person.Count, Is.EqualTo(5));
         }
 
         [Test]

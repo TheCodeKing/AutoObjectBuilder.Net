@@ -12,14 +12,14 @@
 */
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using AutoObjectBuilder.Extensions;
 using AutoObjectBuilder.Interfaces;
 
 namespace AutoObjectBuilder.Base
 {
-    public class AutoConfiguration : IAutoConfigurationResolver
+    public class AutoConfiguration<T> : IAutoConfiguration<T>, IAutoConfiguration, IAutoConfigurationResolver where T : class, IAutoConfiguration
     {
         private readonly IAutoConfigurationResolver configuration;
 
@@ -29,7 +29,8 @@ namespace AutoObjectBuilder.Base
         private readonly IDictionary<string, Func<MemberInfo, object>> resolverDictionary =
             new Dictionary<string, Func<MemberInfo, object>>();
 
-        private int? enumerableSize;
+        private readonly IDictionary<string, string> setting =
+            new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
 
         internal AutoConfiguration()
         {
@@ -40,10 +41,11 @@ namespace AutoObjectBuilder.Base
             this.configuration = configuration;
         }
 
-        public virtual void UseDefaultConfiguration()
+        public void Clear()
         {
             factoryDictionary.Clear();
             resolverDictionary.Clear();
+            setting.Clear();
         }
 
         protected virtual void RegisterFactory(Type type, Func<Type, object> factory)
@@ -58,17 +60,18 @@ namespace AutoObjectBuilder.Base
             resolverDictionary[key] = resolver;
         }
 
-        int IAutoConfigurationResolver.EnumerableSize
+        string IAutoConfigurationResolver.this[string key]
         {
             get
             {
-                int? value = enumerableSize;
-                if (value == null && configuration != null)
+                string value;
+                if (setting.TryGetValue(key, out value))
                 {
-                    value = configuration.EnumerableSize;
+                    return value;
                 }
-                return (value ?? 0);
+                return configuration[key];
             }
+            set { setting[key] = value; }
         }
         
         Func<Type, object> IAutoConfigurationResolver.GetFactory(Type type, bool cascade)
@@ -101,7 +104,7 @@ namespace AutoObjectBuilder.Base
             return null;
         }
 
-        public Func<MemberInfo, object> ResolveMemberByType(MemberInfo prop, Type type, bool cascade = true)
+        Func<MemberInfo, object> IAutoConfigurationResolver.ResolveMemberByType(MemberInfo prop, Type type, bool cascade)
         {
             var key = prop.PropertyOrFieldType().CreateKey();
             Func<MemberInfo, object> value;
@@ -121,25 +124,25 @@ namespace AutoObjectBuilder.Base
             return null;
         }
 
-        public IAutoConfiguration With<TTarget>(TTarget value)
+        public T With<TTarget>(TTarget value)
         {
             RegisterFactory(typeof(TTarget), t => value);
-            return this;
+            return this as T;
         }
 
-        public IAutoConfiguration With<TTarget>(Func<TTarget> factory)
+        public T With<TTarget>(Func<TTarget> factory)
         {
             RegisterFactory(typeof(TTarget), t => factory());
-            return this;
+            return this as T;
         }
 
-        public IAutoConfiguration With<TTarget>(Func<Type, TTarget> factory)
+        public T With<TTarget>(Func<Type, TTarget> factory)
         {
             RegisterFactory(typeof(TTarget), t => factory(t));
-            return this;
+            return this as T;
         }
 
-        public IAutoConfiguration Set<TTarget>(System.Linq.Expressions.Expression<Func<TTarget, object>> expression, object value)
+        public T Set<TTarget>(Expression<Func<TTarget, object>> expression, object value)
         {
             string name = expression.ResolveMemberName();
             if (name == null)
@@ -152,84 +155,38 @@ namespace AutoObjectBuilder.Base
                 throw new ArgumentException("Expression invalid. Value must be of type {0}.", value.GetType().Name);
             }
             RegisterMemberResolver(typeof(TTarget), m => value, name);
-            return this;
+            return this as T;
         }
 
-        public IAutoConfiguration Setter<TTarget>(Func<MemberInfo, TTarget> setter)
+        public T Setter<TTarget>(Func<MemberInfo, TTarget> setter)
         {
             RegisterMemberResolver(typeof(TTarget), m => setter(m));
-            return this;
+            return this as T;
         }
 
-        public IAutoConfiguration Max()
+        IAutoConfiguration IAutoConfiguration.With<TTarget>(TTarget value)
         {
-            With(int.MaxValue)
-                .With(true)
-                .With(uint.MaxValue)
-                .With(long.MaxValue)
-                .With(ulong.MaxValue)
-                .With(short.MaxValue)
-                .With(ushort.MaxValue)
-                .With(double.MaxValue)
-                .With(sbyte.MaxValue)
-                .With(byte.MaxValue)
-                .With(char.MaxValue)
-                .With(DateTime.MaxValue)
-                .With(t => Enum.GetValues(t).Cast<Enum>().Last())
-                ;
-            return this;
+            return With(value);
         }
 
-        public IAutoConfiguration Min()
+        IAutoConfiguration IAutoConfiguration.With<TTarget>(Func<TTarget> factory)
         {
-            With(int.MinValue)
-                .With(false)
-                .With(uint.MinValue)
-                .With(long.MinValue)
-                .With(ulong.MinValue)
-                .With(short.MinValue)
-                .With(ushort.MinValue)
-                .With(double.MinValue)
-                .With(byte.MinValue)
-                .With(sbyte.MinValue)
-                .With(char.MinValue)
-                .With(DateTime.MinValue)
-                .With(t => Enum.GetValues(t).Cast<Enum>().First())
-                ;
-            return this;
+            return With(factory);
         }
 
-        public IAutoConfiguration Default()
+        IAutoConfiguration IAutoConfiguration.With<TTarget>(Func<Type, TTarget> factory)
         {
-            With(default(int))
-                .With(default(bool))
-                .With(default(uint))
-                .With(default(long))
-                .With(default(ulong))
-                .With(default(short))
-                .With(default(ushort))
-                .With(default(double))
-                .With(default(byte))
-                .With(default(sbyte))
-                .With(default(char))
-                .With(default(DateTime))
-                .With(t => Enum.GetValues(t).Cast<Enum>().First())
-                ;
-            return this;
+            return With(factory);
         }
 
-        public IAutoConfiguration Empty()
+        IAutoConfiguration IAutoConfiguration.Set<TTarget>(Expression<Func<TTarget, object>> expression, object value)
         {
-            With(string.Empty)
-                .With((Uri)null)
-                .Setter<Uri>(m => null);
-            return this;
+            return Set(expression, value);
         }
 
-        public IAutoConfiguration EnumerableSize(int count)
+        IAutoConfiguration IAutoConfiguration.Setter<TTarget>(Func<MemberInfo, TTarget> setter)
         {
-            enumerableSize = count;
-            return this;
+            return Setter(setter);
         }
     }
 }

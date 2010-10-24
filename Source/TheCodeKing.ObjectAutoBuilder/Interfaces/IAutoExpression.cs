@@ -10,12 +10,11 @@
 *
 *=============================================================================
 */
-using AutoObjectBuilder.Base;
 using AutoObjectBuilder.Core;
 
 namespace AutoObjectBuilder.Interfaces
 {
-    public interface IAutoExpression<T> : IAutoConfigurationBase<AutoExpression<T>>
+    public interface IAutoExpression<T> : IAutoConfiguration<AutoExpression<T>>
     {
 
     }

@@ -15,9 +15,10 @@ using System.Reflection;
 
 namespace AutoObjectBuilder.Interfaces
 {
-    internal interface IAutoConfigurationResolver : IDefaultAutoConfiguration
+    internal interface IAutoConfigurationResolver
     {
-        int EnumerableSize { get; }
+        void Clear();
+        string this[string key] { get; set; }
         Func<Type, object> GetFactory(Type type, bool cascade = true);
         Func<MemberInfo, object> ResolveMemberByType(MemberInfo prop, Type type, bool cascade = true);
         Func<MemberInfo, object> ResolveMemberByName(MemberInfo prop, Type type, bool cascade = true);

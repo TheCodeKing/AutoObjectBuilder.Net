@@ -11,34 +11,12 @@
 *=============================================================================
 */
 using System;
-using System.IO;
 using AutoObjectBuilder.Base;
 
 namespace AutoObjectBuilder.Config
 {
-    internal sealed class DefaultAutoConfiguration : AutoConfiguration
+    public sealed class DefaultAutoConfiguration : AutoConfiguration<DefaultAutoConfiguration>
     {
-        public DefaultAutoConfiguration()
-        {
-            UseDefaultConfiguration();
-        }
-
-        public override void UseDefaultConfiguration()
-        {
-            base.UseDefaultConfiguration();
-            With("string")
-                .With(new Uri("http://uri/"))
-                .With(new FileInfo(@"C:\filename"))
-                .With(new DirectoryInfo(@"C:\directoryname"))
-                .With(IntPtr.Zero)
-                .Setter(m => new FileInfo(@"C:\" + m.Name.ToLowerInvariant()))
-                .Setter(t => new DirectoryInfo(@"C:\" + t.Name.ToLowerInvariant()))
-                .Setter(m => new Uri("http://" + m.Name.ToLowerInvariant()))
-                .Setter(m => m.Name)
-                .Max()
-                .EnumerableSize(10);
-        }
-
         protected override void RegisterFactory(Type type, Func<Type, object> factory)
         {
             // special case for detault configuration, allow a sting factory to

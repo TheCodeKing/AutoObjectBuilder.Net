@@ -11,11 +11,11 @@ namespace ObjectAutoBuilder.Test.Integration
     {
         public void T1()
         {
-            Auto.Configure.Empty().Default();
+            Auto.Configure.Default();
 
             string s1 = Auto.Make<string>();
 
-            Assert.That(s1, Is.Empty);
+            Assert.That(s1, Is.EqualTo("string"));
 
             Auto.Configure.UseDefaultConfiguration();
 

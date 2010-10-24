@@ -19,19 +19,12 @@ namespace AutoObjectBuilder
 {
     public sealed class Auto
     {
-        private static readonly IAutoConfigurationResolver Resolver;
+        public static readonly DefaultAutoConfiguration Configure;
 
         static Auto()
         {
-            Resolver = new DefaultAutoConfiguration();
-        }
-
-        public static IDefaultAutoConfiguration Configure
-        {
-            get
-            {
-                return Resolver;
-            }
+            Configure = new DefaultAutoConfiguration();
+            Configure.UseDefaultConfiguration();
         }
 
         public static AutoExpression<T> Make<T>()
@@ -40,7 +33,7 @@ namespace AutoObjectBuilder
             IAutoBuilder interfaceBuilder = new AutoProxyBuilder();
             Func<IAutoConfigurationResolver, IAutoBuilder, IObjectParser, IAutoFiller> fillerFactory = (config, builder, parser) => new AutoFiller(config, builder, parser);
             Func<IAutoConfigurationResolver, Func<IAutoConfigurationResolver, IAutoBuilder, IObjectParser, IAutoFiller>, IAutoBuilder> builderFactory = (config, filler) => new AutoBuilder(config, filler, objParser, interfaceBuilder);
-            return new AutoExpression<T>(builderFactory, fillerFactory, new CurrentAutoConfiguration(Resolver));
+            return new AutoExpression<T>(builderFactory, fillerFactory, Configure);
         }
     }
 }

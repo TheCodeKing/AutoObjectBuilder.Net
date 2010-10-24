@@ -95,7 +95,7 @@ namespace AutoObjectBuilder.Core
                 return null;
             }
             var o = CreateObject(type);
-            var arr = Array.CreateInstance(type, configuration.EnumerableSize);
+            var arr = Array.CreateInstance(type, configuration.GetEnumerableSize());
             for (var i = 0; i < arr.Length; i++)
             {
                 arr.SetValue(o, i);

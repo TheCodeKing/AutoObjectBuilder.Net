@@ -17,26 +17,6 @@ namespace ObjectAutoBuilder.Test.Integration
         }
 
         [Test]
-        public void T10()
-        {
-            Person person = Auto.Make<Person>()
-                .Empty().Max();
-
-            Assert.That(person.LastName, Is.Empty);
-            Assert.That(person.FirstName, Is.Empty);
-        }
-
-        [Test]
-        public void T11()
-        {
-            Person person = Auto.Make<Person>()
-                .Empty().Min();
-
-            Assert.That(person.LastName, Is.Empty);
-            Assert.That(person.FirstName, Is.Empty);
-        }
-
-        [Test]
         public void T2()
         {
             string p = Auto.Make<string>()
@@ -89,46 +69,6 @@ namespace ObjectAutoBuilder.Test.Integration
 
             Assert.That(s, Is.EqualTo("Instance"));
             Assert.That(p.FirstName, Is.EqualTo("InstanceFirstName"));
-        }
-
-        [Test]
-        public void T6()
-        {
-            Auto.Configure.Empty();
-
-            string s = Auto.Make<string>();
-
-            Assert.That(s, Is.EqualTo(""));
-        }
-
-
-        [Test]
-        public void T7()
-        {
-            string s = Auto.Make<string>()
-                .Empty();
-
-            Assert.That(s, Is.EqualTo(""));
-        }
-
-        [Test]
-        public void T8()
-        {
-            Person person = Auto.Make<Person>()
-                .Empty();
-
-            Assert.That(person.LastName, Is.Empty);
-            Assert.That(person.FirstName, Is.Empty);
-        }
-
-        [Test]
-        public void T9()
-        {
-            Person person = Auto.Make<Person>()
-                .Empty().Default();
-
-            Assert.That(person.LastName, Is.Empty);
-            Assert.That(person.FirstName, Is.Empty);
         }
     }
 }

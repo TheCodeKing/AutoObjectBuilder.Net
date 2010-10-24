@@ -42,16 +42,15 @@
   <ItemGroup>
     <Compile Include="Auto.cs" />
     <Compile Include="Base\AutoConfiguration.cs" />
-    <Compile Include="Config\CurrentAutoConfiguration.cs" />
     <Compile Include="Config\DefaultAutoConfiguration.cs" />
     <Compile Include="Core\AutoBuilder.cs" />
     <Compile Include="Core\AutoFiller.cs" />
-    <Compile Include="Base\IAutoConfigurationBase.cs" />
     <Compile Include="Core\AutoProxyBuilder.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Extensions\AutoConfigurationResolverExtension.cs" />
+    <Compile Include="Extensions\FluentExtension.cs" />
     <Compile Include="Interfaces\IAutoConfiguration.cs" />
-    <Compile Include="Interfaces\IDefaultAutoConfiguration.cs" />
     <Compile Include="Interfaces\IObjectParser.cs" />
     <Compile Include="Core\ObjectParser.cs" />
     <Compile Include="Interfaces\IAutoFiller.cs" />
