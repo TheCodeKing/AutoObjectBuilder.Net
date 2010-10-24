@@ -13,6 +13,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using AutoObjectBuilder.Config;
 using AutoObjectBuilder.Extensions;
 using AutoObjectBuilder.Interfaces;
@@ -31,8 +32,10 @@ namespace AutoObjectBuilder
                 .With(new FileInfo(@"C:\filename"))
                 .With(new DirectoryInfo(@"C:\directoryname"))
                 .With(IntPtr.Zero)
+                .With(Guid.NewGuid)
+                .With(Thread.CurrentThread.CurrentCulture)
                 .Setter(m => new FileInfo(@"C:\" + m.Name.ToLowerInvariant()))
-                .Setter(t => new DirectoryInfo(@"C:\" + t.Name.ToLowerInvariant()))
+                .Setter(m => new DirectoryInfo(@"C:\" + m.Name.ToLowerInvariant()))
                 .Setter(m => new Uri("http://" + m.Name.ToLowerInvariant()))
                 .Setter(m => m.Name)
                 .Max()

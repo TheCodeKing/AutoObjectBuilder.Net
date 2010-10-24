@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using AutoObjectBuilder;
 using NUnit.Framework;
 using ObjectAutoBuilder.Test.Base;
@@ -17,6 +18,33 @@ namespace ObjectAutoBuilder.Test.Integration
                 .With("hello");
 
             Assert.That(s, Is.EqualTo("hello"));
+        }
+
+        public void T15()
+        {
+            int id = 0;
+            Auto.Configure.With(() => id++);
+
+            // Create instance explicitly by Type
+            int value = Auto.Make<int>();
+            int value2 = Auto.Make<int>();
+
+            Assert.That(value, Is.EqualTo(0));
+            Assert.That(value2, Is.EqualTo(1));    
+
+        }
+
+        public void T16()
+        {
+            Auto.Configure.SetTestPerson();
+
+            // Create instance explicitly by Type
+            Person value = Auto.Make<Person>();
+            Person value2 = Auto.Make<Person>();
+
+            Assert.That(value.IntId, Is.EqualTo(0));
+            Assert.That(value2.IntId, Is.EqualTo(1));
+
         }
 
         [Test]

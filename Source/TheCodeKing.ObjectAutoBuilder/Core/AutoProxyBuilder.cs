@@ -157,13 +157,14 @@ namespace AutoObjectBuilder.Core
             FieldBuilder fieldBuilder = typeBuilder.DefineField(string.Format("<{0}>k__BackingField", property.Name), property.PropertyType, FieldAttributes.Private);
             PropertyBuilder propertyBuilder = typeBuilder.DefineProperty(property.Name, PropertyAttributes.HasDefault, property.PropertyType, property.GetRequiredCustomModifiers());
 
-            bool canCreateWrite = property.CanWrite &&
-                                         (property.ReflectedType.IsInterface || property.GetSetMethod(true).IsVirtual);
+            MethodInfo interfaceMethod = property.GetSetMethod(true);
+
+            bool canCreateWrite = property.CanWrite && interfaceMethod != null &&
+                                         (property.ReflectedType.IsInterface || interfaceMethod.IsVirtual);
 
             // if the property has an overridable setter, then wire up to a backing field
             if (canCreateWrite)
             {
-                MethodInfo interfaceMethod = property.GetSetMethod(true);
                 MethodBuilder methodSet = GetMethodDefinition(typeBuilder, interfaceMethod);
 
                 ILGenerator ilg = methodSet.GetILGenerator();
@@ -186,13 +187,13 @@ namespace AutoObjectBuilder.Core
                 typeBuilder.DefineMethodOverride(methodSet, interfaceMethod);
             }
 
-            bool canCreateRead = property.CanRead &&
-                                    (property.ReflectedType.IsInterface || property.GetGetMethod(true).IsVirtual);
+            interfaceMethod = property.GetGetMethod(true);
+            bool canCreateRead = property.CanRead && interfaceMethod != null &&
+                                    (property.ReflectedType.IsInterface || interfaceMethod.IsVirtual);
             
             // if the property has an overridable setter, and getter then wire up to backing field
             if (canCreateWrite && canCreateRead)
             {
-                MethodInfo interfaceMethod = property.GetGetMethod(true);
                 MethodBuilder methodGet = GetMethodDefinition(typeBuilder, interfaceMethod);
 
                 ILGenerator ilg = methodGet.GetILGenerator();
@@ -206,7 +207,6 @@ namespace AutoObjectBuilder.Core
             // if only the property getter can be overriden then hook this up to an Auto.Make instance
             else if (canCreateRead)
             {
-                MethodInfo interfaceMethod = property.GetGetMethod();
                 MethodBuilder methodGet = GetMethodDefinition(typeBuilder, interfaceMethod);
 
                 CreateAutoMakeImplementation(methodGet);

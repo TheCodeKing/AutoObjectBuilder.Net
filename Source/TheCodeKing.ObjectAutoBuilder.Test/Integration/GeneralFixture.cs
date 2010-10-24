@@ -1,5 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Globalization;
 using System.Net;
+using System.Text.RegularExpressions;
+using System.Threading;
 using AutoObjectBuilder;
 using NUnit.Framework;
 using ObjectAutoBuilder.Test.Base;
@@ -99,6 +104,63 @@ namespace ObjectAutoBuilder.Test.Integration
             Assert.That(request.MediaType, Is.EqualTo("MediaType"));
         }
 
+        [Test]
+        public void T7()
+        {
+            Guid guid = Auto.Make<Guid>();
 
+            Assert.That(guid, Is.Not.Null);
+        }
+
+        [Test]
+        public void T8()
+        {
+            object value = Auto.Make<object>();
+
+            Assert.That(value, Is.Not.Null);
+        }
+
+        [Test]
+        public void T9()
+        {
+            Dictionary<string, int> value = Auto.Make<Dictionary<string,int>>();
+
+            Assert.That(value, Is.Not.Null);
+            Assert.That(value.Count, Is.EqualTo(1));
+            Assert.That(value["string"], Is.EqualTo(int.MaxValue));
+        }
+
+        [Test]
+        public void T10()
+        {
+            Regex value = Auto.Make<Regex>();
+
+            Assert.That(value, Is.Not.Null);
+        }
+
+        [Test]
+        public void T11()
+        {
+            Exception value = Auto.Make<Exception>();
+
+            Assert.That(value, Is.Not.Null);
+        }
+
+        [Test]
+        public void T12()
+        {
+            DataTable value = Auto.Make<DataTable>();
+
+            Assert.That(value, Is.Not.Null);
+        }
+
+        [Test]
+        public void T13()
+        {
+            CultureInfo value = Auto.Make<CultureInfo>();
+
+            Assert.That(value, Is.Not.Null);
+            Assert.That(value, Is.EqualTo(Thread.CurrentThread.CurrentCulture));
+        }
     }
 }

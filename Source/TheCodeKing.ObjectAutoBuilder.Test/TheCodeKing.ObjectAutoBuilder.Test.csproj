@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helper\CommandExtension.cs" />
     <Compile Include="Helper\InernalAbstractPerson.cs" />
     <Compile Include="Helper\PersonCollection.cs" />
     <Compile Include="Integration\APIFixture.cs" />
