@@ -70,9 +70,9 @@ namespace ObjectAutoBuilder.Test.Integration
         [Test]
         public void T4()
         {
-            // Set member explicitly via expression
+            // Set member explicitly via Action
             Person person = Auto.Make<Person>()
-                .Set<Person>(o => o.FirstName, "John");
+                .Do<Person>(o => o.FirstName = "John");
 
             Assert.That(person.FirstName, Is.EqualTo("John"));
         }

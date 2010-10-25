@@ -8,6 +8,7 @@ using System.Threading;
 using AutoObjectBuilder;
 using NUnit.Framework;
 using ObjectAutoBuilder.Test.Base;
+using ObjectAutoBuilder.Test.Helper;
 
 namespace ObjectAutoBuilder.Test.Integration
 {
@@ -97,7 +98,7 @@ namespace ObjectAutoBuilder.Test.Integration
             Assert.That(request, Is.Not.Null);
             Assert.That(request.Expect, Is.EqualTo("Expect"));
             Assert.That(request.Headers, Is.Not.Null);
-            Assert.That(request.IfModifiedSince, Is.EqualTo(DateTime.MaxValue));
+            Assert.That(request.IfModifiedSince.ToString("R"), Is.EqualTo(DateTime.MaxValue.ToString("R")));
             Assert.That(request.MaximumAutomaticRedirections, Is.EqualTo(int.MaxValue));
             Assert.That(request.MaximumResponseHeadersLength, Is.EqualTo(int.MaxValue));
             Assert.That(request.Pipelined, Is.EqualTo(true));
@@ -161,6 +162,30 @@ namespace ObjectAutoBuilder.Test.Integration
 
             Assert.That(value, Is.Not.Null);
             Assert.That(value, Is.EqualTo(Thread.CurrentThread.CurrentCulture));
+        }
+
+        [Test]
+        public void T14()
+        {
+            Auto.Configure.Do<Person>(o => o.FirstName = "Test");
+
+            Person value = Auto.Make<Person>()
+                .Do<Person>(o => o.FirstName = "hello");
+
+            Assert.That(value.FirstName, Is.EqualTo("hello"));
+        }
+
+        [Test]
+        public void T15()
+        {
+            Auto.Configure.Do<Person>(o => o.FirstName = "global do")
+                .Set<Person>(o => o.FirstName, "global set");
+
+            Person value = Auto.Make<Person>()
+                .Set<Person>(o => o.FirstName, "set")
+                .Do<Person>(o => o.FirstName = "do");
+
+            Assert.That(value.FirstName, Is.EqualTo("do"));
         }
     }
 }

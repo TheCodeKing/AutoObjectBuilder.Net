@@ -75,7 +75,7 @@ namespace ObjectAutoBuilder.Test.Integration
             AbstractPerson person = Auto.Make<AbstractPerson>();
             var i = person.NonAbstractIntId;
 
-            Assert.That(i, Is.EqualTo(0));
+            Assert.That(i, Is.EqualTo(int.MaxValue));
         }
 
         [Test]

@@ -57,5 +57,14 @@ namespace ObjectAutoBuilder.Test.Integration
 
             Assert.That(p.TitleEnum, Is.EqualTo(Title.Dr));
         }
+
+        [Test]
+        public void T6_1()
+        {
+            Person p = Auto.Make<Person>()
+                .Do<Person>(o => o.TitleEnum = Title.Dr);
+
+            Assert.That(p.TitleEnum, Is.EqualTo(Title.Dr));
+        }
     }
 }

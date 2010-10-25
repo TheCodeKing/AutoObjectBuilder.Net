@@ -139,6 +139,11 @@ namespace AutoObjectBuilder.Core
                     }
                 }
             });
+            var actions = config.ResolvePostProcessors(type);
+            if (actions != null)
+            {
+               actions(o);
+            }
         }
     }
 }

@@ -32,6 +32,9 @@ namespace AutoObjectBuilder.Base
         private readonly IDictionary<string, string> setting =
             new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
 
+        private readonly IDictionary<string, List<MulticastDelegate>> postProcessors =
+            new Dictionary<string, List<MulticastDelegate>>(StringComparer.InvariantCultureIgnoreCase);
+
         internal AutoConfiguration()
         {
         }
@@ -45,6 +48,7 @@ namespace AutoObjectBuilder.Base
         {
             factoryDictionary.Clear();
             resolverDictionary.Clear();
+            postProcessors.Clear();
             setting.Clear();
         }
 
@@ -58,6 +62,18 @@ namespace AutoObjectBuilder.Base
         {
             var key = type.CreateKey(memberName);
             resolverDictionary[key] = resolver;
+        }
+
+        protected virtual void RegisterPostProcessor(Type type, MulticastDelegate action)
+        {
+            var key = type.CreateKey();
+            List<MulticastDelegate> value = null;
+            if (!postProcessors.TryGetValue(key, out value))
+            {
+                value = new List<MulticastDelegate>();
+                postProcessors.Add(key, value);   
+            }
+            value.Add(action);
         }
 
         string IAutoConfigurationResolver.this[string key]
@@ -124,6 +140,33 @@ namespace AutoObjectBuilder.Base
             return null;
         }
 
+        Action<object> IAutoConfigurationResolver.ResolvePostProcessors(Type type)
+        {
+            Action<object> global = null;
+            if (configuration != null)
+            {
+                global = configuration.ResolvePostProcessors(type);
+            }
+            string key = type.CreateKey();
+            List<MulticastDelegate> actions;
+            if (postProcessors.TryGetValue(key, out actions))
+            {
+                return o =>
+                           {
+                               if (global!=null)
+                               {
+                                   global(o);
+                               }
+                               actions.ForEach(i => i.Method.Invoke(i.Target, new[] {o}));
+                           };
+            }
+            else if (global !=null)
+            {
+                return o => global(o);
+            }
+            return null;
+        }
+
         public T With<TTarget>(TTarget value)
         {
             RegisterFactory(typeof(TTarget), t => value);
@@ -139,6 +182,12 @@ namespace AutoObjectBuilder.Base
         public T With<TTarget>(Func<Type, TTarget> factory)
         {
             RegisterFactory(typeof(TTarget), t => factory(t));
+            return this as T;
+        }
+
+        public T Do<TTarget>(Action<TTarget> expression)
+        {
+            RegisterPostProcessor(typeof (TTarget), expression);
             return this as T;
         }
 
@@ -182,6 +231,11 @@ namespace AutoObjectBuilder.Base
         IAutoConfiguration IAutoConfiguration.Set<TTarget>(Expression<Func<TTarget, object>> expression, object value)
         {
             return Set(expression, value);
+        }
+
+        IAutoConfiguration IAutoConfiguration.Do<TTarget>(Action<TTarget> expression)
+        {
+            return Do(expression);
         }
 
         IAutoConfiguration IAutoConfiguration.Setter<TTarget>(Func<MemberInfo, TTarget> setter)

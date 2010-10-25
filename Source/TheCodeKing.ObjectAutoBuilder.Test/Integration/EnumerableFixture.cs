@@ -1,11 +1,12 @@
 ﻿using AutoObjectBuilder;
 using NUnit.Framework;
+using ObjectAutoBuilder.Test.Base;
 using ObjectAutoBuilder.Test.Helper;
 
 namespace ObjectAutoBuilder.Test.Integration
 {
     [TestFixture]
-    public class EnumerableFixture
+    public class EnumerableFixture : TestFixtureBase
     {
         [Test]
         public void T1()
