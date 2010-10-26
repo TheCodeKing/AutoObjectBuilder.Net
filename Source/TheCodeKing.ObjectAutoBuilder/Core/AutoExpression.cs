@@ -16,7 +16,7 @@ using AutoObjectBuilder.Interfaces;
 
 namespace AutoObjectBuilder.Core
 {
-    public class AutoExpression<T> : AutoConfiguration<AutoExpression<T>>, IAutoExpression<T>
+    public class AutoExpression<T> : AutoConfiguration<AutoExpression<T>>, IAutoExpression<T>, IAutoConfiguration
     {
         private readonly IAutoBuilder builder;
         private bool intiailized;
@@ -50,6 +50,11 @@ namespace AutoObjectBuilder.Core
         public static implicit operator T(AutoExpression<T> exp)
         {
             return exp.Object;
+        }
+
+        TTarget IAutoConfiguration.Make<TTarget>()
+        {
+            return (TTarget)builder.CreateObject(typeof(TTarget));
         }
     }
 }

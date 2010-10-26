@@ -25,6 +25,8 @@ namespace AutoObjectBuilder.Interfaces
         IAutoConfiguration Set<TTarget>(Expression<Func<TTarget, object>> expression, object value);
         IAutoConfiguration Do<TTarget>(Action<TTarget> expression);
         IAutoConfiguration Setter<TTarget>(Func<MemberInfo, TTarget> setter);
+
+        T Make<T>();
     }
 
     public interface IAutoConfiguration<out T>

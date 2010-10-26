@@ -16,6 +16,5 @@ namespace AutoObjectBuilder.Interfaces
 {
     public interface IAutoExpression<T> : IAutoConfiguration<AutoExpression<T>>
     {
-
     }
 }

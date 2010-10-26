@@ -242,5 +242,10 @@ namespace AutoObjectBuilder.Base
         {
             return Setter(setter);
         }
+
+        TTarget IAutoConfiguration.Make<TTarget>()
+        {
+            return Auto.Make<TTarget>();
+        }
     }
 }
