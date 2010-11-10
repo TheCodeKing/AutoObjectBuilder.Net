@@ -19,7 +19,7 @@ using AutoObjectBuilder.Interfaces;
 
 namespace AutoObjectBuilder.Base
 {
-    public class AutoConfiguration<T> : IAutoConfiguration<T>, IAutoConfiguration, IAutoConfigurationResolver where T : class, IAutoConfiguration
+    public class AutoConfiguration<TReturn, T> : IAutoConfiguration<TReturn, T>, IAutoConfiguration, IAutoConfigurationResolver where T : class, IAutoConfiguration
     {
         private readonly IAutoConfigurationResolver configuration;
 
@@ -191,6 +191,12 @@ namespace AutoObjectBuilder.Base
             return this as T;
         }
 
+        public T Do(Action<TReturn> expression)
+        {
+            RegisterPostProcessor(typeof(TReturn), expression);
+            return this as T;
+        }
+
         public T Set<TTarget>(Expression<Func<TTarget, object>> expression, object value)
         {
             string name = expression.ResolveMemberName();
@@ -210,6 +216,12 @@ namespace AutoObjectBuilder.Base
         public T Setter<TTarget>(Func<MemberInfo, TTarget> setter)
         {
             RegisterMemberResolver(typeof(TTarget), m => setter(m));
+            return this as T;
+        }
+
+        public T Setter(Func<MemberInfo, TReturn> setter)
+        {
+            RegisterMemberResolver(typeof(TReturn), m => setter(m));
             return this as T;
         }
 
@@ -247,5 +259,6 @@ namespace AutoObjectBuilder.Base
         {
             return Auto.Make<TTarget>();
         }
+
     }
 }

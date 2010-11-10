@@ -15,7 +15,7 @@ using AutoObjectBuilder.Base;
 
 namespace AutoObjectBuilder.Config
 {
-    public sealed class DefaultAutoConfiguration : AutoConfiguration<DefaultAutoConfiguration>
+    public sealed class DefaultAutoConfiguration : AutoConfiguration<DefaultAutoConfiguration, DefaultAutoConfiguration>
     {
         protected override void RegisterFactory(Type type, Func<Type, object> factory)
         {

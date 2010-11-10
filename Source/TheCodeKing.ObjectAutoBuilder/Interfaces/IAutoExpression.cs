@@ -14,7 +14,7 @@ using AutoObjectBuilder.Core;
 
 namespace AutoObjectBuilder.Interfaces
 {
-    public interface IAutoExpression<T> : IAutoConfiguration<AutoExpression<T>>
+    public interface IAutoExpression<T> : IAutoConfiguration<T, AutoExpression<T>>
     {
     }
 }

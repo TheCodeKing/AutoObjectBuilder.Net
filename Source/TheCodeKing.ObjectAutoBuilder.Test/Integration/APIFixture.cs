@@ -185,5 +185,17 @@ namespace ObjectAutoBuilder.Test.Integration
             Assert.That(peopleLookups, Is.Not.Null);
             Assert.That(peopleLookups.Count, Is.EqualTo(0));
         }
+
+        [Test]
+        public void T17()
+        {
+            // Set member explicitly via Action
+            Person person = Auto.Make<Person>()
+                .Do(o => o.FirstName = "John")
+                .Do(o => o.LastName="Smith");
+
+            Assert.That(person.FirstName, Is.EqualTo("John"));
+            Assert.That(person.LastName, Is.EqualTo("Smith"));
+        }
     }
 }

@@ -16,7 +16,7 @@ using AutoObjectBuilder.Interfaces;
 
 namespace AutoObjectBuilder.Core
 {
-    public class AutoExpression<T> : AutoConfiguration<AutoExpression<T>>, IAutoExpression<T>, IAutoConfiguration
+    public class AutoExpression<T> : AutoConfiguration<T, AutoExpression<T>>, IAutoExpression<T>, IAutoConfiguration
     {
         private readonly IAutoBuilder builder;
         private bool intiailized;
@@ -54,6 +54,10 @@ namespace AutoObjectBuilder.Core
 
         TTarget IAutoConfiguration.Make<TTarget>()
         {
+            if (typeof(TTarget) == typeof(T))
+            {
+                throw new InvalidOperationException("Preventing operation that would cause infinite recursion.");
+            }
             return (TTarget)builder.CreateObject(typeof(TTarget));
         }
     }
