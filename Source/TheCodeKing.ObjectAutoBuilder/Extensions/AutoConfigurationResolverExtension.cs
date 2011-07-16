@@ -1,6 +1,6 @@
 ﻿/*=============================================================================
 *
-*	(C) Copyright 2010, Michael Carlisle (mike.carlisle@thecodeking.co.uk)
+*	(C) Copyright 2011, Michael Carlisle (mike.carlisle@thecodeking.co.uk)
 *
 *   http://www.TheCodeKing.co.uk
 *  
