@@ -8,7 +8,6 @@ namespace ObjectAutoBuilder.Test.Integration
     [TestFixture]
     public class InternalPersonFixture : TestFixtureBase
     {
-
         [Test]
         public void T1()
         {

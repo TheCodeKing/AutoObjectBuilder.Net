@@ -90,48 +90,6 @@ namespace ObjectAutoBuilder.Test.Integration
         }
 
         [Test]
-        public void T6()
-        {
-            // try a random .Net class
-            HttpWebRequest request = Auto.Make<HttpWebRequest>();
-
-            Assert.That(request, Is.Not.Null);
-            Assert.That(request.Expect, Is.EqualTo("Expect"));
-            Assert.That(request.Headers, Is.Not.Null);
-            Assert.That(request.IfModifiedSince.ToString("R"), Is.EqualTo(DateTime.MaxValue.ToString("R")));
-            Assert.That(request.MaximumAutomaticRedirections, Is.EqualTo(int.MaxValue));
-            Assert.That(request.MaximumResponseHeadersLength, Is.EqualTo(int.MaxValue));
-            Assert.That(request.Pipelined, Is.EqualTo(true));
-            Assert.That(request.MediaType, Is.EqualTo("MediaType"));
-        }
-
-        [Test]
-        public void T7()
-        {
-            Guid guid = Auto.Make<Guid>();
-
-            Assert.That(guid, Is.Not.Null);
-        }
-
-        [Test]
-        public void T8()
-        {
-            object value = Auto.Make<object>();
-
-            Assert.That(value, Is.Not.Null);
-        }
-
-        [Test]
-        public void T9()
-        {
-            Dictionary<string, int> value = Auto.Make<Dictionary<string,int>>();
-
-            Assert.That(value, Is.Not.Null);
-            Assert.That(value.Count, Is.EqualTo(1));
-            Assert.That(value["string"], Is.EqualTo(int.MaxValue));
-        }
-
-        [Test]
         public void T10()
         {
             Regex value = Auto.Make<Regex>();
@@ -186,6 +144,48 @@ namespace ObjectAutoBuilder.Test.Integration
                 .Do<Person>(o => o.FirstName = "do");
 
             Assert.That(value.FirstName, Is.EqualTo("do"));
+        }
+
+        [Test]
+        public void T6()
+        {
+            // try a random .Net class
+            HttpWebRequest request = Auto.Make<HttpWebRequest>();
+
+            Assert.That(request, Is.Not.Null);
+            Assert.That(request.Expect, Is.EqualTo("Expect"));
+            Assert.That(request.Headers, Is.Not.Null);
+            Assert.That(request.IfModifiedSince.ToString("R"), Is.EqualTo(DateTime.MaxValue.ToString("R")));
+            Assert.That(request.MaximumAutomaticRedirections, Is.EqualTo(int.MaxValue));
+            Assert.That(request.MaximumResponseHeadersLength, Is.EqualTo(int.MaxValue));
+            Assert.That(request.Pipelined, Is.EqualTo(true));
+            Assert.That(request.MediaType, Is.EqualTo("MediaType"));
+        }
+
+        [Test]
+        public void T7()
+        {
+            Guid guid = Auto.Make<Guid>();
+
+            Assert.That(guid, Is.Not.Null);
+        }
+
+        [Test]
+        public void T8()
+        {
+            object value = Auto.Make<object>();
+
+            Assert.That(value, Is.Not.Null);
+        }
+
+        [Test]
+        public void T9()
+        {
+            Dictionary<string, int> value = Auto.Make<Dictionary<string, int>>();
+
+            Assert.That(value, Is.Not.Null);
+            Assert.That(value.Count, Is.EqualTo(1));
+            Assert.That(value["string"], Is.EqualTo(int.MaxValue));
         }
     }
 }

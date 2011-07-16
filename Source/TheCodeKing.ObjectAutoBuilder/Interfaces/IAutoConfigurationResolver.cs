@@ -17,8 +17,8 @@ namespace AutoObjectBuilder.Interfaces
 {
     internal interface IAutoConfigurationResolver
     {
-        void Clear();
         string this[string key] { get; set; }
+        void Clear();
         Func<Type, object> GetFactory(Type type, bool cascade = true);
         Func<MemberInfo, object> ResolveMemberByType(MemberInfo prop, Type type, bool cascade = true);
         Func<MemberInfo, object> ResolveMemberByName(MemberInfo prop, Type type, bool cascade = true);

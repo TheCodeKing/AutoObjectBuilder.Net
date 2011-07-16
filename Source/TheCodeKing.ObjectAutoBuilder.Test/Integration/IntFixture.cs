@@ -65,7 +65,7 @@ namespace ObjectAutoBuilder.Test.Integration
             int i = 100;
 
             Auto.Configure.With(() => i++);
-            int val1 = Auto.Make<int>(); 
+            int val1 = Auto.Make<int>();
             int val2 = Auto.Make<int>();
             int val3 = Auto.Make<int>();
 

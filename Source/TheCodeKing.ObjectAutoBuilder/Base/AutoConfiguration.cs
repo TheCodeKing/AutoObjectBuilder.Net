@@ -19,21 +19,22 @@ using AutoObjectBuilder.Interfaces;
 
 namespace AutoObjectBuilder.Base
 {
-    public class AutoConfiguration<TReturn, T> : IAutoConfiguration<TReturn, T>, IAutoConfiguration, IAutoConfigurationResolver where T : class, IAutoConfiguration
+    public class AutoConfiguration<TReturn, T> : IAutoConfiguration<TReturn, T>, IAutoConfiguration,
+                                                 IAutoConfigurationResolver where T : class, IAutoConfiguration
     {
         private readonly IAutoConfigurationResolver configuration;
 
         private readonly IDictionary<string, Func<Type, object>> factoryDictionary =
             new Dictionary<string, Func<Type, object>>();
 
+        private readonly IDictionary<string, List<MulticastDelegate>> postProcessors =
+            new Dictionary<string, List<MulticastDelegate>>(StringComparer.InvariantCultureIgnoreCase);
+
         private readonly IDictionary<string, Func<MemberInfo, object>> resolverDictionary =
             new Dictionary<string, Func<MemberInfo, object>>();
 
         private readonly IDictionary<string, string> setting =
             new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
-
-        private readonly IDictionary<string, List<MulticastDelegate>> postProcessors =
-            new Dictionary<string, List<MulticastDelegate>>(StringComparer.InvariantCultureIgnoreCase);
 
         internal AutoConfiguration()
         {
@@ -44,36 +45,115 @@ namespace AutoObjectBuilder.Base
             this.configuration = configuration;
         }
 
+        #region IAutoConfiguration Members
+
+        IAutoConfiguration IAutoConfiguration.With<TTarget>(TTarget value)
+        {
+            return With(value);
+        }
+
+        IAutoConfiguration IAutoConfiguration.With<TTarget>(Func<TTarget> factory)
+        {
+            return With(factory);
+        }
+
+        IAutoConfiguration IAutoConfiguration.With<TTarget>(Func<Type, TTarget> factory)
+        {
+            return With(factory);
+        }
+
+        IAutoConfiguration IAutoConfiguration.Set<TTarget>(Expression<Func<TTarget, object>> expression, object value)
+        {
+            return Set(expression, value);
+        }
+
+        IAutoConfiguration IAutoConfiguration.Do<TTarget>(Action<TTarget> expression)
+        {
+            return Do(expression);
+        }
+
+        IAutoConfiguration IAutoConfiguration.Setter<TTarget>(Func<MemberInfo, TTarget> setter)
+        {
+            return Setter(setter);
+        }
+
+        TTarget IAutoConfiguration.Make<TTarget>()
+        {
+            return Auto.Make<TTarget>();
+        }
+
+        #endregion
+
+        #region IAutoConfiguration<TReturn,T> Members
+
+        public T With<TTarget>(TTarget value)
+        {
+            RegisterFactory(typeof (TTarget), t => value);
+            return this as T;
+        }
+
+        public T With<TTarget>(Func<TTarget> factory)
+        {
+            RegisterFactory(typeof (TTarget), t => factory());
+            return this as T;
+        }
+
+        public T With<TTarget>(Func<Type, TTarget> factory)
+        {
+            RegisterFactory(typeof (TTarget), t => factory(t));
+            return this as T;
+        }
+
+        public T Do<TTarget>(Action<TTarget> expression)
+        {
+            RegisterPostProcessor(typeof (TTarget), expression);
+            return this as T;
+        }
+
+        public T Do(Action<TReturn> expression)
+        {
+            RegisterPostProcessor(typeof (TReturn), expression);
+            return this as T;
+        }
+
+        public T Set<TTarget>(Expression<Func<TTarget, object>> expression, object value)
+        {
+            string name = expression.ResolveMemberName();
+            if (name == null)
+            {
+                throw new ArgumentException("Expression invalid. Use property or field access.", "expression");
+            }
+            Type checkType = expression.ResolveMemberType();
+            if (value != null && !checkType.IsAssignableFrom(value.GetType()))
+            {
+                throw new ArgumentException("Expression invalid. Value must be of type {0}.", value.GetType().Name);
+            }
+            RegisterMemberResolver(typeof (TTarget), m => value, name);
+            return this as T;
+        }
+
+        public T Setter<TTarget>(Func<MemberInfo, TTarget> setter)
+        {
+            RegisterMemberResolver(typeof (TTarget), m => setter(m));
+            return this as T;
+        }
+
+        public T Setter(Func<MemberInfo, TReturn> setter)
+        {
+            RegisterMemberResolver(typeof (TReturn), m => setter(m));
+            return this as T;
+        }
+
+        #endregion
+
+        #region IAutoConfigurationResolver Members
+
         public void Clear()
         {
             factoryDictionary.Clear();
             resolverDictionary.Clear();
             postProcessors.Clear();
             setting.Clear();
-        }
-
-        protected virtual void RegisterFactory(Type type, Func<Type, object> factory)
-        {
-            var key = type.CreateKey();
-            factoryDictionary[key] = factory;
-        }
-
-        protected virtual void RegisterMemberResolver(Type type, Func<MemberInfo, object> resolver, string memberName = null)
-        {
-            var key = type.CreateKey(memberName);
-            resolverDictionary[key] = resolver;
-        }
-
-        protected virtual void RegisterPostProcessor(Type type, MulticastDelegate action)
-        {
-            var key = type.CreateKey();
-            List<MulticastDelegate> value = null;
-            if (!postProcessors.TryGetValue(key, out value))
-            {
-                value = new List<MulticastDelegate>();
-                postProcessors.Add(key, value);   
-            }
-            value.Add(action);
         }
 
         string IAutoConfigurationResolver.this[string key]
@@ -89,7 +169,7 @@ namespace AutoObjectBuilder.Base
             }
             set { setting[key] = value; }
         }
-        
+
         Func<Type, object> IAutoConfigurationResolver.GetFactory(Type type, bool cascade)
         {
             var key = type.CreateKey();
@@ -98,7 +178,7 @@ namespace AutoObjectBuilder.Base
             {
                 return value;
             }
-            if (cascade && configuration!=null)
+            if (cascade && configuration != null)
             {
                 return configuration.GetFactory(type);
             }
@@ -153,112 +233,45 @@ namespace AutoObjectBuilder.Base
             {
                 return o =>
                            {
-                               if (global!=null)
+                               if (global != null)
                                {
                                    global(o);
                                }
                                actions.ForEach(i => i.Method.Invoke(i.Target, new[] {o}));
                            };
             }
-            else if (global !=null)
+            else if (global != null)
             {
                 return o => global(o);
             }
             return null;
         }
 
-        public T With<TTarget>(TTarget value)
+        #endregion
+
+        protected virtual void RegisterFactory(Type type, Func<Type, object> factory)
         {
-            RegisterFactory(typeof(TTarget), t => value);
-            return this as T;
+            var key = type.CreateKey();
+            factoryDictionary[key] = factory;
         }
 
-        public T With<TTarget>(Func<TTarget> factory)
+        protected virtual void RegisterMemberResolver(Type type, Func<MemberInfo, object> resolver,
+                                                      string memberName = null)
         {
-            RegisterFactory(typeof(TTarget), t => factory());
-            return this as T;
+            var key = type.CreateKey(memberName);
+            resolverDictionary[key] = resolver;
         }
 
-        public T With<TTarget>(Func<Type, TTarget> factory)
+        protected virtual void RegisterPostProcessor(Type type, MulticastDelegate action)
         {
-            RegisterFactory(typeof(TTarget), t => factory(t));
-            return this as T;
-        }
-
-        public T Do<TTarget>(Action<TTarget> expression)
-        {
-            RegisterPostProcessor(typeof (TTarget), expression);
-            return this as T;
-        }
-
-        public T Do(Action<TReturn> expression)
-        {
-            RegisterPostProcessor(typeof(TReturn), expression);
-            return this as T;
-        }
-
-        public T Set<TTarget>(Expression<Func<TTarget, object>> expression, object value)
-        {
-            string name = expression.ResolveMemberName();
-            if (name == null)
+            var key = type.CreateKey();
+            List<MulticastDelegate> value = null;
+            if (!postProcessors.TryGetValue(key, out value))
             {
-                throw new ArgumentException("Expression invalid. Use property or field access.", "expression");
+                value = new List<MulticastDelegate>();
+                postProcessors.Add(key, value);
             }
-            Type checkType = expression.ResolveMemberType();
-            if (value != null && !checkType.IsAssignableFrom(value.GetType()))
-            {
-                throw new ArgumentException("Expression invalid. Value must be of type {0}.", value.GetType().Name);
-            }
-            RegisterMemberResolver(typeof(TTarget), m => value, name);
-            return this as T;
+            value.Add(action);
         }
-
-        public T Setter<TTarget>(Func<MemberInfo, TTarget> setter)
-        {
-            RegisterMemberResolver(typeof(TTarget), m => setter(m));
-            return this as T;
-        }
-
-        public T Setter(Func<MemberInfo, TReturn> setter)
-        {
-            RegisterMemberResolver(typeof(TReturn), m => setter(m));
-            return this as T;
-        }
-
-        IAutoConfiguration IAutoConfiguration.With<TTarget>(TTarget value)
-        {
-            return With(value);
-        }
-
-        IAutoConfiguration IAutoConfiguration.With<TTarget>(Func<TTarget> factory)
-        {
-            return With(factory);
-        }
-
-        IAutoConfiguration IAutoConfiguration.With<TTarget>(Func<Type, TTarget> factory)
-        {
-            return With(factory);
-        }
-
-        IAutoConfiguration IAutoConfiguration.Set<TTarget>(Expression<Func<TTarget, object>> expression, object value)
-        {
-            return Set(expression, value);
-        }
-
-        IAutoConfiguration IAutoConfiguration.Do<TTarget>(Action<TTarget> expression)
-        {
-            return Do(expression);
-        }
-
-        IAutoConfiguration IAutoConfiguration.Setter<TTarget>(Func<MemberInfo, TTarget> setter)
-        {
-            return Setter(setter);
-        }
-
-        TTarget IAutoConfiguration.Make<TTarget>()
-        {
-            return Auto.Make<TTarget>();
-        }
-
     }
 }

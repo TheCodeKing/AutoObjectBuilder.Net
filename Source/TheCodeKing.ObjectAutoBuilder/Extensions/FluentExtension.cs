@@ -19,6 +19,7 @@ using AutoObjectBuilder.Extensions;
 using AutoObjectBuilder.Interfaces;
 
 // ReSharper disable CheckNamespace
+
 namespace AutoObjectBuilder
 // ReSharper restore CheckNamespace
 {
@@ -26,7 +27,7 @@ namespace AutoObjectBuilder
     {
         public static DefaultAutoConfiguration UseDefaultConfiguration(this DefaultAutoConfiguration autoConfiguration)
         {
-            ((IAutoConfigurationResolver)autoConfiguration).Clear();
+            ((IAutoConfigurationResolver) autoConfiguration).Clear();
             autoConfiguration.With("string")
                 .With(new Uri("http://uri/"))
                 .With(new FileInfo(@"C:\filename"))
@@ -107,7 +108,7 @@ namespace AutoObjectBuilder
         public static TReturn EnumerableSize<TReturn>(this TReturn autoExpression, int count)
             where TReturn : IAutoConfiguration
         {
-            ((IAutoConfigurationResolver)autoExpression).SetEnumerableSize(count);
+            ((IAutoConfigurationResolver) autoExpression).SetEnumerableSize(count);
             return autoExpression;
         }
     }

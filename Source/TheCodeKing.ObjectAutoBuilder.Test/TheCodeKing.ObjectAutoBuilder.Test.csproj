@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helper\CommandExtension.cs" />
+    <Compile Include="Helper\INestedInterfacePerson.cs" />
     <Compile Include="Helper\InernalAbstractPerson.cs" />
     <Compile Include="Helper\PersonCollection.cs" />
     <Compile Include="Integration\APIFixture.cs" />
@@ -53,6 +54,7 @@
     <Compile Include="Helper\AbstractPerson.cs" />
     <Compile Include="Helper\SystemInfoTest.cs" />
     <Compile Include="Helper\IPerson.cs" />
+    <Compile Include="Integration\NestedInterfacePersonFixture.cs" />
     <Compile Include="Integration\EnumerableFixture.cs" />
     <Compile Include="Integration\SystemInfoFixture.cs" />
     <Compile Include="Integration\InternalPersonFixture.cs" />

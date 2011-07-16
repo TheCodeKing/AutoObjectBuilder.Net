@@ -18,7 +18,7 @@ namespace AutoObjectBuilder.Extensions
     {
         public static bool IsOfRawGenericTypeDefinition(this Type toCheck, Type generic)
         {
-            while (toCheck != null && toCheck != typeof(object))
+            while (toCheck != null && toCheck != typeof (object))
             {
                 if (toCheck.IsGenericType && toCheck.GetGenericTypeDefinition() == generic)
                 {

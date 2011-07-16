@@ -21,9 +21,9 @@ namespace AutoObjectBuilder.Config
         {
             // special case for detault configuration, allow a sting factory to
             // override default setter behaviour
-            if (type == typeof(string))
+            if (type == typeof (string))
             {
-                RegisterMemberResolver(type, m => factory(typeof(string)));
+                RegisterMemberResolver(type, m => factory(typeof (string)));
             }
             base.RegisterFactory(type, factory);
         }

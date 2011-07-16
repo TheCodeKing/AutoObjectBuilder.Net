@@ -31,7 +31,7 @@ namespace ObjectAutoBuilder.Test.Integration
         {
             Auto.Configure
                 .With("Test")
-                .Setter(m => "Test"+m.Name);
+                .Setter(m => "Test" + m.Name);
 
             Person p = Auto.Make<Person>();
 
@@ -43,7 +43,7 @@ namespace ObjectAutoBuilder.Test.Integration
         {
             Auto.Configure
                 .With("Config")
-                .Setter(m => "Config"+m.Name);
+                .Setter(m => "Config" + m.Name);
 
             string p = Auto.Make<string>()
                 .With("Instance")

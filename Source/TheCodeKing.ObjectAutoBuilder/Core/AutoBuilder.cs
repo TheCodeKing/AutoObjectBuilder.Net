@@ -25,11 +25,12 @@ namespace AutoObjectBuilder.Core
     {
         private readonly IDictionary<string, object> cache = new Dictionary<string, object>();
         private readonly IAutoConfigurationResolver configuration;
-        private readonly IAutoBuilder interfaceBuilder;
         private readonly IAutoFiller filler;
+        private readonly IAutoBuilder interfaceBuilder;
 
-        internal AutoBuilder(IAutoConfigurationResolver configuration, Func<IAutoConfigurationResolver, IAutoBuilder, IObjectParser, IAutoFiller> filler,
-            IObjectParser parser, IAutoBuilder interfaceBuilder)
+        internal AutoBuilder(IAutoConfigurationResolver configuration,
+                             Func<IAutoConfigurationResolver, IAutoBuilder, IObjectParser, IAutoFiller> filler,
+                             IObjectParser parser, IAutoBuilder interfaceBuilder)
         {
             this.filler = filler(configuration, this, parser);
             this.configuration = configuration;
@@ -40,30 +41,30 @@ namespace AutoObjectBuilder.Core
 
         public T CreateObject<T>()
         {
-            return (T)CreateObject(typeof(T));
+            return (T) CreateObject(typeof (T));
         }
 
         public object CreateObject(Type type)
         {
-            if (type.IsOfRawGenericTypeDefinition(typeof(IDictionary<,>)))
+            if (type.IsOfRawGenericTypeDefinition(typeof (IDictionary<,>)))
             {
                 var args = type.GetGenericArguments();
-                type = typeof(Dictionary<,>).MakeGenericType(args);
+                type = typeof (Dictionary<,>).MakeGenericType(args);
                 return CreateObject(type);
             }
 
-            if (type.IsOfRawGenericTypeDefinition(typeof(IList<>)))
+            if (type.IsOfRawGenericTypeDefinition(typeof (IList<>)))
             {
-                type = typeof(List<>).MakeGenericType(type.GetGenericArguments());
+                type = typeof (List<>).MakeGenericType(type.GetGenericArguments());
                 return CreateObject(type);
             }
-            if (type.IsOfRawGenericTypeDefinition(typeof(ICollection<>)))
+            if (type.IsOfRawGenericTypeDefinition(typeof (ICollection<>)))
             {
-                type = typeof(Collection<>).MakeGenericType(type.GetGenericArguments()[0]);
+                type = typeof (Collection<>).MakeGenericType(type.GetGenericArguments()[0]);
                 return CreateObject(type);
             }
 
-            if (type.IsOfRawGenericTypeDefinition(typeof(IEnumerable<>)))
+            if (type.IsOfRawGenericTypeDefinition(typeof (IEnumerable<>)))
             {
                 return CreateArrayObject(type.GetGenericArguments()[0]);
             }
@@ -79,7 +80,7 @@ namespace AutoObjectBuilder.Core
             }
             if (type.IsEnum)
             {
-                f = configuration.GetFactory(typeof(Enum));
+                f = configuration.GetFactory(typeof (Enum));
                 if (f != null)
                 {
                     return f(type);
@@ -87,6 +88,8 @@ namespace AutoObjectBuilder.Core
             }
             return GetNewObject(type) ?? type.GetDefault();
         }
+
+        #endregion
 
         private object CreateArrayObject(Type type)
         {
@@ -102,8 +105,6 @@ namespace AutoObjectBuilder.Core
             }
             return arr;
         }
-
-        #endregion
 
         private object GetNewObject(Type type)
         {
@@ -154,7 +155,7 @@ namespace AutoObjectBuilder.Core
 
             // try non-public constructors
             arr = type.GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic).Where(
-                        c => ConstructorDoesNotContainType(c, type)).Select(p => p).ToArray();
+                c => ConstructorDoesNotContainType(c, type)).Select(p => p).ToArray();
             if (arr.Length != 0)
             {
                 // try construct using least parameters
@@ -174,8 +175,9 @@ namespace AutoObjectBuilder.Core
         private static bool ConstructorDoesNotContainType(ConstructorInfo info, Type type)
         {
             // savoid recursion and avoid initializing objects with Pointers (can cause unhandled exceptions)
-            return info.GetParameters().ToList().Find(p => p.ParameterType == type || p.ParameterType == typeof(IntPtr)) == null;
+            return
+                info.GetParameters().ToList().Find(p => p.ParameterType == type || p.ParameterType == typeof (IntPtr)) ==
+                null;
         }
-
     }
 }

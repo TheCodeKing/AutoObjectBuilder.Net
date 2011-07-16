@@ -30,11 +30,10 @@ namespace ObjectAutoBuilder.Test.Helper
         string FirstName { get; set; }
         string LastName { get; set; }
         Person Father { get; set; }
+        int this[string arg1, int arg2] { get; set; }
 
         TR GenericMethod<T, TR>(string arg1, T arg2);
 
         string BasicMethod(int arg1);
-
-        int this[string arg1, int arg2] { get; set; }
     }
 }

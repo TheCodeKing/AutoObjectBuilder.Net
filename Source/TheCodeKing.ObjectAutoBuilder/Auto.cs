@@ -31,8 +31,12 @@ namespace AutoObjectBuilder
         {
             IObjectParser objParser = new ObjectParser();
             IAutoBuilder interfaceBuilder = new AutoProxyBuilder();
-            Func<IAutoConfigurationResolver, IAutoBuilder, IObjectParser, IAutoFiller> fillerFactory = (config, builder, parser) => new AutoFiller(config, builder, parser);
-            Func<IAutoConfigurationResolver, Func<IAutoConfigurationResolver, IAutoBuilder, IObjectParser, IAutoFiller>, IAutoBuilder> builderFactory = (config, filler) => new AutoBuilder(config, filler, objParser, interfaceBuilder);
+            Func<IAutoConfigurationResolver, IAutoBuilder, IObjectParser, IAutoFiller> fillerFactory =
+                (config, builder, parser) => new AutoFiller(config, builder, parser);
+            Func
+                <IAutoConfigurationResolver, Func<IAutoConfigurationResolver, IAutoBuilder, IObjectParser, IAutoFiller>,
+                    IAutoBuilder> builderFactory =
+                        (config, filler) => new AutoBuilder(config, filler, objParser, interfaceBuilder);
             return new AutoExpression<T>(builderFactory, fillerFactory, Configure);
         }
     }

@@ -21,9 +21,11 @@ namespace AutoObjectBuilder.Core
     {
         private const BindingFlags DEFAULT_FLAGS = BindingFlags.Instance | BindingFlags.Public;
 
+        #region IObjectParser Members
+
         public void ParseMembers<T>(Action<MemberInfo> callback)
         {
-            ParseMembers(typeof(T), callback);
+            ParseMembers(typeof (T), callback);
         }
 
         public void ParseMembers(Type type, Action<MemberInfo> callback)
@@ -34,5 +36,7 @@ namespace AutoObjectBuilder.Core
                 .ToList()
                 .ForEach(callback);
         }
+
+        #endregion
     }
 }

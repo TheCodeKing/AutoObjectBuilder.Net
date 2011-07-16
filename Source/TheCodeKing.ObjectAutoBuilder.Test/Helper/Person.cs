@@ -5,10 +5,10 @@ namespace ObjectAutoBuilder.Test.Helper
 {
     public enum Title
     {
-        Mr=0,
-        Mrs=1,
-        Dr=2,
-        Sir=3
+        Mr = 0,
+        Mrs = 1,
+        Dr = 2,
+        Sir = 3
     }
 
     public enum ATitle
@@ -21,10 +21,11 @@ namespace ObjectAutoBuilder.Test.Helper
 
     public class Person : IEquatable<Person>
     {
-        public readonly static Person PersonTest1;
+        public static readonly Person PersonTest1;
         public List<Person> Collection = new List<Person>();
         public Person Mother;
         public List<int> Numbers = new List<int>();
+        private int indexer;
 
         static Person()
         {
@@ -40,7 +41,12 @@ namespace ObjectAutoBuilder.Test.Helper
 
         public string[] Array { get; set; }
         public IEnumerable<int> Enumerable { get; set; }
-        public int Readonly { get { return -1; }}
+
+        public int Readonly
+        {
+            get { return -1; }
+        }
+
         public bool Bool { get; set; }
         public int IntId { get; set; }
         public uint UIntId { get; set; }
@@ -55,7 +61,7 @@ namespace ObjectAutoBuilder.Test.Helper
         public Boolean BoolRef { get; set; }
         public Char CharRef { get; set; }
         public Byte ByteRef { get; set; }
-        public SByte SByteRef { get; set; } 
+        public SByte SByteRef { get; set; }
         public Int16 Int16Id { get; set; }
         public UInt16 UInt16Id { get; set; }
         public Int32 Int32Id { get; set; }
@@ -72,8 +78,8 @@ namespace ObjectAutoBuilder.Test.Helper
         private Person Hidden { get; set; }
         public Person Father { get; set; }
 
-        private int indexer;
-        public int this[string index] { 
+        public int this[string index]
+        {
             get { return indexer; }
             set { indexer = value; }
         }
@@ -82,7 +88,7 @@ namespace ObjectAutoBuilder.Test.Helper
 
         public bool Equals(Person other)
         {
-            if (other==null)
+            if (other == null)
             {
                 return false;
             }
@@ -112,14 +118,19 @@ namespace ObjectAutoBuilder.Test.Helper
                    && FirstName == other.FirstName
                    && LastName == other.LastName
                    && this["string"] == other["string"]
-                   && Array == other.Array 
+                   && Array == other.Array
                    && Bool == other.Bool
                    && BoolRef == other.BoolRef
                    && Enumerable == other.Enumerable
-                   && Hidden == null ? other.Hidden == null : Hidden.Equals(other.Hidden)
-                                                              && Mother == null ? other.Mother == null : Mother.Equals(other.Mother)
-                                                                                                         && Father == null ? other.Father == null : Father.Equals(other.Father);
-
+                   && Hidden == null
+                       ? other.Hidden == null
+                       : Hidden.Equals(other.Hidden)
+                         && Mother == null
+                             ? other.Mother == null
+                             : Mother.Equals(other.Mother)
+                               && Father == null
+                                   ? other.Father == null
+                                   : Father.Equals(other.Father);
         }
 
         #endregion
@@ -154,7 +165,7 @@ namespace ObjectAutoBuilder.Test.Helper
             hash ^= LastName.GetHashCode();
             hash ^= Bool.GetHashCode();
             hash ^= BoolRef.GetHashCode();
-            if (Array!=null)
+            if (Array != null)
             {
                 hash ^= Array.GetHashCode();
             }
@@ -162,7 +173,7 @@ namespace ObjectAutoBuilder.Test.Helper
             {
                 hash ^= Enumerable.GetHashCode();
             }
-            if (Father!=null)
+            if (Father != null)
             {
                 hash ^= Father.GetHashCode();
             }
@@ -176,7 +187,7 @@ namespace ObjectAutoBuilder.Test.Helper
             }
             return hash;
         }
-        
+
         public override bool Equals(object obj)
         {
             return Equals(obj as Person);

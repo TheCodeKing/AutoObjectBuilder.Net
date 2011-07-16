@@ -15,8 +15,8 @@ namespace ObjectAutoBuilder.Test.Integration
                 .Min();
             Assert.That(p, Is.EqualTo(Title.Mr));
         }
-        [Test]
 
+        [Test]
         public void T2()
         {
             Title p = Auto.Make<Title>()

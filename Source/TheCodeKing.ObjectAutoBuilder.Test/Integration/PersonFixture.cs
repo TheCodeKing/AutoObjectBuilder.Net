@@ -38,11 +38,11 @@ namespace ObjectAutoBuilder.Test.Integration
         public void T10()
         {
             int i = 0;
-            Auto.Configure.With(() => new Person { FirstName = "Test" + (i++) });
+            Auto.Configure.With(() => new Person {FirstName = "Test" + (i++)});
 
             Person person1 = Auto.Make<Person>();
 
-           Auto.Configure.UseDefaultConfiguration();
+            Auto.Configure.UseDefaultConfiguration();
 
             Person person2 = Auto.Make<Person>()
                 .Set<Person>(o => o.FirstName, "hello");
@@ -55,7 +55,7 @@ namespace ObjectAutoBuilder.Test.Integration
         public void T10_1()
         {
             int i = 0;
-            Auto.Configure.With(() => new Person { FirstName = "Test" + (i++) });
+            Auto.Configure.With(() => new Person {FirstName = "Test" + (i++)});
 
             Person person1 = Auto.Make<Person>();
 
@@ -165,7 +165,7 @@ namespace ObjectAutoBuilder.Test.Integration
         [Test]
         public void T14()
         {
-            Person person = Auto.Make<Person>().With(() => new Person { FirstName = "TEST1" });
+            Person person = Auto.Make<Person>().With(() => new Person {FirstName = "TEST1"});
 
             Assert.That(person, Is.Not.Null);
             Assert.That(person.FirstName, Is.EqualTo("TEST1"));
@@ -204,8 +204,8 @@ namespace ObjectAutoBuilder.Test.Integration
             Auto.Configure
                 .Do<Person>(o => o.FirstName = Compare.FirstName)
                 .Do<Person>(o => o.LastName = Compare.LastName)
-                .Do<Person>(o => o.Mother = new Person { FirstName = motherName })
-                .Do<Person>(o => o.Father = new Person { FirstName = fatherName });
+                .Do<Person>(o => o.Mother = new Person {FirstName = motherName})
+                .Do<Person>(o => o.Father = new Person {FirstName = fatherName});
 
             Person person = Auto.Make<Person>();
 
@@ -239,6 +239,14 @@ namespace ObjectAutoBuilder.Test.Integration
                 .Do<Person>(o => o.FirstName = "hello");
 
             Assert.That(person.LastName, Is.EqualTo("T16"));
+        }
+
+        [Test]
+        public void T17()
+        {
+            Person person = Auto.Make<Person>();
+
+            Assert.That(person["test"], Is.EqualTo(int.MaxValue));
         }
 
         [Test]
@@ -318,12 +326,12 @@ namespace ObjectAutoBuilder.Test.Integration
         public void T9()
         {
             int[] i = {0};
-            Auto.Configure.With(() => new Person { FirstName = "Test" + (i[0]++) });
+            Auto.Configure.With(() => new Person {FirstName = "Test" + (i[0]++)});
 
             Person person1 = Auto.Make<Person>();
             Person person2 = Auto.Make<Person>();
             Person person3 = Auto.Make<Person>()
-                .With(() => new Person { FirstName = "Test" + (i[0]++) });
+                .With(() => new Person {FirstName = "Test" + (i[0]++)});
 
             Person person4 = Auto.Make<Person>()
                 .With(Compare);
@@ -362,13 +370,13 @@ namespace ObjectAutoBuilder.Test.Integration
         [Test]
         public void T9_1()
         {
-            int[] i = { 0 };
-            Auto.Configure.With(() => new Person { FirstName = "Test" + (i[0]++) });
+            int[] i = {0};
+            Auto.Configure.With(() => new Person {FirstName = "Test" + (i[0]++)});
 
             Person person1 = Auto.Make<Person>();
             Person person2 = Auto.Make<Person>();
             Person person3 = Auto.Make<Person>()
-                .With(() => new Person { FirstName = "Test" + (i[0]++) });
+                .With(() => new Person {FirstName = "Test" + (i[0]++)});
 
             Person person4 = Auto.Make<Person>()
                 .With(Compare);
@@ -402,14 +410,6 @@ namespace ObjectAutoBuilder.Test.Integration
             Assert.That(person6.Father.IntId, Is.EqualTo(10));
             Assert.That(person7.LastName, Is.EqualTo("T9"));
             Assert.That(person8.LastName, Is.EqualTo("TEST"));
-        }
-
-        [Test]
-        public void T17()
-        {
-            Person person = Auto.Make<Person>();
-
-            Assert.That(person["test"], Is.EqualTo(int.MaxValue));
         }
     }
 }

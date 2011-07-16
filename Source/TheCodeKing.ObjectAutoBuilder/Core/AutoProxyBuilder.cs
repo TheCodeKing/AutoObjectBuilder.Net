@@ -21,25 +21,28 @@ namespace AutoObjectBuilder.Core
 {
     internal class AutoProxyBuilder : IAutoBuilder
     {
-        private static readonly MethodInfo MakeMethod = typeof(Auto).GetMethod(
-                   "Make",
-                   BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic,
-                   null,
-                   new Type[]{
-                        },
-                   null
-                   );
-
-        private static readonly ConstructorInfo NotImplCtor = typeof(NotImplementedException).GetConstructor(
-            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
+        private static readonly MethodInfo MakeMethod = typeof (Auto).GetMethod(
+            "Make",
+            BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic,
             null,
-            new Type[]{},
+            new Type[]
+                {
+                },
             null
             );
 
+        private static readonly ConstructorInfo NotImplCtor = typeof (NotImplementedException).GetConstructor(
+            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
+            null,
+            new Type[] {},
+            null
+            );
+
+        #region IAutoBuilder Members
+
         public T CreateObject<T>()
         {
-            return (T)CreateObject(typeof (T));
+            return (T) CreateObject(typeof (T));
         }
 
         public object CreateObject(Type type)
@@ -56,6 +59,8 @@ namespace AutoObjectBuilder.Core
             return Activator.CreateInstance(type);
         }
 
+        #endregion
+
         private static Type CreateProxyType(Type type)
         {
             var assemblyName = new AssemblyName("AutoObjectBuilder.Proxy");
@@ -64,27 +69,12 @@ namespace AutoObjectBuilder.Core
             var moduleBuilder = assemblyBuilder.DefineDynamicModule(assemblyName.Name);
             var typeBuilder = moduleBuilder.DefineType("Impl" + type.Name, TypeAttributes.Public | TypeAttributes.Class);
             typeBuilder.DefineDefaultConstructor(MethodAttributes.Public);
-            if (type.IsInterface)
+            ParseType(type, typeBuilder);
+            foreach (var item in type.GetInterfaces())
             {
-                typeBuilder.AddInterfaceImplementation(type);
-            } 
-            else if (type.IsAbstract)
-            {
-                typeBuilder.SetParent(type);
+                ParseType(item, typeBuilder);
             }
 
-            foreach (var method in type.GetMethods(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance))
-            {
-                if (!method.IsSpecialName && method.IsVirtual)
-                {
-                    BuildMethodStub(method, typeBuilder);
-                }
-            }
-
-            foreach (var property in type.GetProperties(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance))
-            {
-                BuildPropertyStub(property, typeBuilder);
-            }
             try
             {
                 return typeBuilder.CreateType();
@@ -95,12 +85,43 @@ namespace AutoObjectBuilder.Core
             }
         }
 
+        private static void ParseType(Type type, TypeBuilder typeBuilder)
+        {
+            if (type.IsInterface)
+            {
+                typeBuilder.AddInterfaceImplementation(type);
+            }
+            else if (type.IsAbstract)
+            {
+                typeBuilder.SetParent(type);
+            }
+
+            foreach (
+                var method in
+                    type.GetMethods(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
+                                    BindingFlags.FlattenHierarchy))
+            {
+                if (!method.IsSpecialName && method.IsVirtual)
+                {
+                    BuildMethodStub(method, typeBuilder);
+                }
+            }
+
+            foreach (
+                var property in
+                    type.GetProperties(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
+                                       BindingFlags.FlattenHierarchy))
+            {
+                BuildPropertyStub(property, typeBuilder);
+            }
+        }
+
         private static void BuildMethodStub(MethodInfo methodInfo, TypeBuilder type)
         {
             MethodBuilder method = GetMethodDefinition(type, methodInfo);
 
             var ilg = method.GetILGenerator();
-            if (methodInfo.ReturnType.Equals(typeof(void)))
+            if (methodInfo.ReturnType.Equals(typeof (void)))
             {
                 ilg.Emit(OpCodes.Nop);
                 ilg.Emit(OpCodes.Newobj, NotImplCtor);
@@ -134,7 +155,7 @@ namespace AutoObjectBuilder.Core
 
                 string[] names = generics.Select(o => o.Name).ToArray();
                 var gparams = method.DefineGenericParameters(names);
-        
+
                 foreach (var p in gparams)
                 {
                     GenericTypeParameterBuilder p1 = p;
@@ -154,13 +175,16 @@ namespace AutoObjectBuilder.Core
 
         private static void BuildPropertyStub(PropertyInfo property, TypeBuilder typeBuilder)
         {
-            FieldBuilder fieldBuilder = typeBuilder.DefineField(string.Format("<{0}>k__BackingField", property.Name), property.PropertyType, FieldAttributes.Private);
-            PropertyBuilder propertyBuilder = typeBuilder.DefineProperty(property.Name, PropertyAttributes.HasDefault, property.PropertyType, property.GetRequiredCustomModifiers());
+            FieldBuilder fieldBuilder = typeBuilder.DefineField(string.Format("<{0}>k__BackingField", property.Name),
+                                                                property.PropertyType, FieldAttributes.Private);
+            PropertyBuilder propertyBuilder = typeBuilder.DefineProperty(property.Name, PropertyAttributes.HasDefault,
+                                                                         property.PropertyType,
+                                                                         property.GetRequiredCustomModifiers());
 
             MethodInfo interfaceMethod = property.GetSetMethod(true);
 
             bool canCreateWrite = property.CanWrite && interfaceMethod != null &&
-                                         (property.ReflectedType.IsInterface || interfaceMethod.IsVirtual);
+                                  (property.ReflectedType.IsInterface || interfaceMethod.IsVirtual);
 
             // if the property has an overridable setter, then wire up to a backing field
             if (canCreateWrite)
@@ -189,8 +213,8 @@ namespace AutoObjectBuilder.Core
 
             interfaceMethod = property.GetGetMethod(true);
             bool canCreateRead = property.CanRead && interfaceMethod != null &&
-                                    (property.ReflectedType.IsInterface || interfaceMethod.IsVirtual);
-            
+                                 (property.ReflectedType.IsInterface || interfaceMethod.IsVirtual);
+
             // if the property has an overridable setter, and getter then wire up to backing field
             if (canCreateWrite && canCreateRead)
             {
@@ -204,7 +228,7 @@ namespace AutoObjectBuilder.Core
                 propertyBuilder.SetGetMethod(methodGet);
                 typeBuilder.DefineMethodOverride(methodGet, interfaceMethod);
             }
-            // if only the property getter can be overriden then hook this up to an Auto.Make instance
+                // if only the property getter can be overriden then hook this up to an Auto.Make instance
             else if (canCreateRead)
             {
                 MethodBuilder methodGet = GetMethodDefinition(typeBuilder, interfaceMethod);
@@ -218,11 +242,11 @@ namespace AutoObjectBuilder.Core
         {
             MethodInfo method1 = MakeMethod.MakeGenericMethod(methodBuilder.ReturnType);
 
-            MethodInfo method2 = typeof(AutoExpression<>).MakeGenericType(methodBuilder.ReturnType).GetMethod(
+            MethodInfo method2 = typeof (AutoExpression<>).MakeGenericType(methodBuilder.ReturnType).GetMethod(
                 "get_Object",
                 BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
                 null,
-                new Type[] { },
+                new Type[] {},
                 null
                 );
             // Adding parameters

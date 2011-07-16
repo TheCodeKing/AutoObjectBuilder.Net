@@ -26,7 +26,10 @@ namespace AutoObjectBuilder.Core
         {
         }
 
-        internal AutoExpression(Func<IAutoConfigurationResolver, Func<IAutoConfigurationResolver, IAutoBuilder, IObjectParser, IAutoFiller>, IAutoBuilder> builderFactory,
+        internal AutoExpression(
+            Func
+                <IAutoConfigurationResolver, Func<IAutoConfigurationResolver, IAutoBuilder, IObjectParser, IAutoFiller>,
+                IAutoBuilder> builderFactory,
             Func<IAutoConfigurationResolver, IAutoBuilder, IObjectParser, IAutoFiller> filler,
             IAutoConfigurationResolver configuration)
             : base(configuration)
@@ -47,18 +50,22 @@ namespace AutoObjectBuilder.Core
             }
         }
 
-        public static implicit operator T(AutoExpression<T> exp)
-        {
-            return exp.Object;
-        }
+        #region IAutoConfiguration Members
 
         TTarget IAutoConfiguration.Make<TTarget>()
         {
-            if (typeof(TTarget) == typeof(T))
+            if (typeof (TTarget) == typeof (T))
             {
                 throw new InvalidOperationException("Preventing operation that would cause infinite recursion.");
             }
-            return (TTarget)builder.CreateObject(typeof(TTarget));
+            return (TTarget) builder.CreateObject(typeof (TTarget));
+        }
+
+        #endregion
+
+        public static implicit operator T(AutoExpression<T> exp)
+        {
+            return exp.Object;
         }
     }
 }

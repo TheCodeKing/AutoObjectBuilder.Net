@@ -27,7 +27,7 @@ namespace ObjectAutoBuilder.Test.Integration
             Assert.That(person, Is.Not.Null);
             Assert.That(i, Is.EqualTo("string"));
         }
-        
+
         [Test]
         public void T3()
         {
@@ -38,7 +38,7 @@ namespace ObjectAutoBuilder.Test.Integration
             Assert.That(i, Is.Not.Null);
             Assert.That(i.FirstName, Is.EqualTo("FirstName"));
         }
-        
+
         [Test]
         public void T4()
         {

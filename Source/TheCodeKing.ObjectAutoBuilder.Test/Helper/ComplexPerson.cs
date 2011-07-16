@@ -11,5 +11,4 @@
 
         public ConflictPerson ConflictPerson { get; set; }
     }
-        
 }

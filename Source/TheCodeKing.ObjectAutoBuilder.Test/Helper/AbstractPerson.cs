@@ -6,12 +6,14 @@
         {
             get { return 0; }
         }
+
         public int NonAbstractIntId { get; set; }
 
         public abstract int Readonly { get; }
         public abstract int IntId { get; set; }
-        
+
         public abstract string FirstName { get; set; }
+        public abstract int this[string arg1, int arg2] { get; set; }
 
         public abstract TR GenericMethod<T, TR>(string arg1, T arg2);
 
@@ -21,7 +23,5 @@
         {
             return null;
         }
-
-        public abstract int this[string arg1, int arg2] { get; set; }
     }
 }

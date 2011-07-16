@@ -34,6 +34,5 @@ namespace AutoObjectBuilder.Extensions
         {
             configuration[ENUMERATION_SIZE_KEY] = Convert.ToString(size);
         }
-    
     }
 }

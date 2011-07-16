@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using AutoObjectBuilder;
 using NUnit.Framework;
 using ObjectAutoBuilder.Test.Base;
@@ -10,16 +9,6 @@ namespace ObjectAutoBuilder.Test.Integration
     [TestFixture]
     public class ApiFixture : TestFixtureBase
     {
-        [Test]
-        public void T1()
-        {
-            // Create instance explicitly by Type
-            string s = Auto.Make<string>()
-                .With("hello");
-
-            Assert.That(s, Is.EqualTo("hello"));
-        }
-
         public void T15()
         {
             int id = 0;
@@ -30,8 +19,7 @@ namespace ObjectAutoBuilder.Test.Integration
             int value2 = Auto.Make<int>();
 
             Assert.That(value, Is.EqualTo(0));
-            Assert.That(value2, Is.EqualTo(1));    
-
+            Assert.That(value2, Is.EqualTo(1));
         }
 
         public void T16()
@@ -44,7 +32,87 @@ namespace ObjectAutoBuilder.Test.Integration
 
             Assert.That(value.IntId, Is.EqualTo(0));
             Assert.That(value2.IntId, Is.EqualTo(1));
+        }
 
+        [Test]
+        public void T1()
+        {
+            // Create instance explicitly by Type
+            string s = Auto.Make<string>()
+                .With("hello");
+
+            Assert.That(s, Is.EqualTo("hello"));
+        }
+
+        [Test]
+        public void T10()
+        {
+            // create an List type, populated with a defined number of items
+            IList<IPerson> person = Auto.Make<IList<IPerson>>().EnumerableSize(5).Object;
+
+            Assert.That(person, Is.Not.Null);
+            Assert.That(person.Count, Is.EqualTo(5));
+        }
+
+        [Test]
+        public void T11()
+        {
+            // create an Collection type, populated with a defined number of items
+            ICollection<IPerson> person = Auto.Make<ICollection<IPerson>>().EnumerableSize(10).Object;
+
+            Assert.That(person, Is.Not.Null);
+            Assert.That(person.Count, Is.EqualTo(10));
+        }
+
+        [Test]
+        public void T12()
+        {
+            // create an Collection type, populated with a defined number of items
+            IEnumerable<IPerson> person = Auto.Make<IEnumerable<IPerson>>().EnumerableSize(10).Object;
+
+            Assert.That(person, Is.Not.Null);
+
+            int count = 0;
+            foreach (var p in person)
+            {
+                count++;
+                Assert.That(p, Is.Not.Null);
+            }
+            Assert.That(count, Is.EqualTo(10));
+        }
+
+        [Test]
+        public void T13()
+        {
+            // create an Collection type, populated with a defined number of items
+            IDictionary<string, IPerson> peopleLookups =
+                Auto.Make<IDictionary<string, IPerson>>().EnumerableSize(10).Object;
+
+            Assert.That(peopleLookups, Is.Not.Null);
+            // only one item due to dictionary key
+            Assert.That(peopleLookups.Count, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void T14()
+        {
+            // create an Collection type, populated with a defined number of items
+            IDictionary<int, IPerson> peopleLookups = Auto.Make<IDictionary<int, IPerson>>().EnumerableSize(0).Object;
+
+            Assert.That(peopleLookups, Is.Not.Null);
+            Assert.That(peopleLookups.Count, Is.EqualTo(0));
+        }
+
+        [Test]
+        public void T17()
+        {
+            // Set member explicitly via Action
+            Person person = Auto.Make<Person>()
+                .Do(o => o.FirstName = "John")
+                .Do(o => o.LastName = "Smith");
+
+            Assert.That(person.FirstName, Is.EqualTo("John"));
+            Assert.That(person.LastName, Is.EqualTo("Smith"));
         }
 
         [Test]
@@ -62,7 +130,7 @@ namespace ObjectAutoBuilder.Test.Integration
         {
             // Set member using MemberInfo instance
             Person person = Auto.Make<Person>()
-                .Setter(m => m.Name+": A STRING");
+                .Setter(m => m.Name + ": A STRING");
 
             Assert.That(person.FirstName, Is.EqualTo("FirstName: A STRING"));
         }
@@ -126,76 +194,6 @@ namespace ObjectAutoBuilder.Test.Integration
 
             Assert.That(person, Is.Not.Null);
             Assert.That(person.Length, Is.EqualTo(5));
-        }
-
-        [Test]
-        public void T10()
-        {
-            // create an List type, populated with a defined number of items
-            IList<IPerson> person = Auto.Make<IList<IPerson>>().EnumerableSize(5).Object;
-
-            Assert.That(person, Is.Not.Null);
-            Assert.That(person.Count, Is.EqualTo(5));
-        }
-
-        [Test]
-        public void T11()
-        {
-            // create an Collection type, populated with a defined number of items
-            ICollection<IPerson> person = Auto.Make<ICollection<IPerson>>().EnumerableSize(10).Object;
-
-            Assert.That(person, Is.Not.Null);
-            Assert.That(person.Count, Is.EqualTo(10));
-        }
-
-        [Test]
-        public void T12()
-        {
-            // create an Collection type, populated with a defined number of items
-            IEnumerable<IPerson> person = Auto.Make<IEnumerable<IPerson>>().EnumerableSize(10).Object;
-
-            Assert.That(person, Is.Not.Null);
-
-            int count =0;
-            foreach(var p in person)
-            {
-                count++;
-                Assert.That(p, Is.Not.Null);   
-            }
-            Assert.That(count, Is.EqualTo(10));
-        }
-
-        [Test]
-        public void T13()
-        {
-            // create an Collection type, populated with a defined number of items
-            IDictionary<string, IPerson> peopleLookups = Auto.Make<IDictionary<string, IPerson>>().EnumerableSize(10).Object;
-
-            Assert.That(peopleLookups, Is.Not.Null);
-            // only one item due to dictionary key
-            Assert.That(peopleLookups.Count, Is.EqualTo(1));
-        }
-
-        [Test]
-        public void T14()
-        {
-            // create an Collection type, populated with a defined number of items
-            IDictionary<int, IPerson> peopleLookups = Auto.Make<IDictionary<int, IPerson>>().EnumerableSize(0).Object;
-
-            Assert.That(peopleLookups, Is.Not.Null);
-            Assert.That(peopleLookups.Count, Is.EqualTo(0));
-        }
-
-        [Test]
-        public void T17()
-        {
-            // Set member explicitly via Action
-            Person person = Auto.Make<Person>()
-                .Do(o => o.FirstName = "John")
-                .Do(o => o.LastName="Smith");
-
-            Assert.That(person.FirstName, Is.EqualTo("John"));
-            Assert.That(person.LastName, Is.EqualTo("Smith"));
         }
     }
 }
