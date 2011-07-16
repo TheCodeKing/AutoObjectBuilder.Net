@@ -1,0 +1,15 @@
+Overview
+--------
+AutoObjectBuilder.Net is an open source project designed to assist with Unit testing by automatically building simple and complex object graphs with predictable test data.
+
+Features
+--------
+* Recursive instance creation - injecting constructor dependencies as required
+* Able to create internal, protected and constructor-less instances
+* Auto generation of interface/abstract class proxies
+* Provides instances recursively populated with predicable test data
+* Provides a fluent interface for overriding default construction behaviour to cover different edge cases
+* Auto populates ICollection, IList, IDictionary, and Array types with a configurable number of items
+* Enables use of custom configuration via extension methods.
+
+The library can be used to automatically create and build objects recursively, populating them with predicable test data as they are constructed. These instances can then be used to compliment other Mocking frameworks, by allowing them to be injected as Mocked return values. This avoids bloating unit tests with extensive set-up code for complex objects.
