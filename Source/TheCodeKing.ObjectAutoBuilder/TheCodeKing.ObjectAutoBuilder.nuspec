@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <licenseUrl>https://github.com/TheCodeKing/AutoObjectBuilder.Net/blob/master/License</licenseUrl>
+    <projectUrl>https://github.com/TheCodeKing/AutoObjectBuilder.Net</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <copyright>Copyright 2011</copyright>
+    <tags>unittest test-tests testing mock stub proxy</tags>
+  </metadata>
+</package>
