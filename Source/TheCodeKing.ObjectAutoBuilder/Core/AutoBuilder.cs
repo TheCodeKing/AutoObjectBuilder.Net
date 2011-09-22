@@ -23,6 +23,7 @@ namespace AutoObjectBuilder.Core
 {
     internal class AutoBuilder : IAutoBuilder
     {
+        private readonly IList<string> constructCache = new List<string>();
         private readonly IDictionary<string, object> cache = new Dictionary<string, object>();
         private readonly IAutoConfigurationResolver configuration;
         private readonly IAutoFiller filler;
@@ -123,6 +124,10 @@ namespace AutoObjectBuilder.Core
             {
                 o = null;
             }
+            finally
+            {
+                constructCache.Remove(key);
+            }
 
             if (o != null)
             {
@@ -139,12 +144,24 @@ namespace AutoObjectBuilder.Core
                 return interfaceBuilder.CreateObject(type);
             }
 
+            // if recursing within constructor, attempt to return 
+            // unconstructed instance or null
+            var key = type.CreateKey();
+            if (constructCache.Contains(key))
+            {
+                return ConstructorlessType(type);
+            }
+
+            // prevent constructor recursion, further attempts to generate this type
+            // within it's constructor return null
+            constructCache.Add(key);
+
             // try public constructors
             var arr = type.GetConstructors().Where(c => ConstructorDoesNotContainType(c, type)).Select(p => p).ToArray();
             if (arr.Length != 0)
             {
                 // try construct using least parameters
-                var info = arr.OrderBy(o => o.GetParameters().Length).ElementAtOrDefault(0);
+                var info = arr.OrderBy(o => GetConstructorParamsWeighting(o.GetParameters())).ElementAtOrDefault(0);
                 if (info != null)
                 {
                     var pArr = info.GetParameters();
@@ -159,7 +176,7 @@ namespace AutoObjectBuilder.Core
             if (arr.Length != 0)
             {
                 // try construct using least parameters
-                var info = arr.OrderBy(o => o.GetParameters().Length).ElementAtOrDefault(0);
+                var info = arr.OrderBy(o => GetConstructorParamsWeighting(o.GetParameters())).ElementAtOrDefault(0);
                 if (info != null)
                 {
                     var pArr = info.GetParameters();
@@ -169,12 +186,29 @@ namespace AutoObjectBuilder.Core
             }
 
             // initialize without constructor
+            return ConstructorlessType(type);
+        }
+
+        private object ConstructorlessType(Type type)
+        {
+            // initialize without constructor
             return FormatterServices.GetUninitializedObject(type);
+        }
+
+        // 
+        private int GetConstructorParamsWeighting(ParameterInfo[] parameterInfo)
+        {
+            // prefer empty constructors
+            if (parameterInfo.Length == 0)
+            {
+                return -1;
+            }
+            return parameterInfo.Select(p => p.ParameterType.IsPrimitive ? 0 : 1).Sum();
         }
 
         private static bool ConstructorDoesNotContainType(ConstructorInfo info, Type type)
         {
-            // savoid recursion and avoid initializing objects with Pointers (can cause unhandled exceptions)
+            // avoid recursion and avoid initializing objects with Pointers (can cause unhandled exceptions)
             return
                 info.GetParameters().ToList().Find(p => p.ParameterType == type || p.ParameterType == typeof (IntPtr)) ==
                 null;

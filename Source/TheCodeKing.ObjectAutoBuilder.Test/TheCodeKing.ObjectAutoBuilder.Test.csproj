@@ -48,6 +48,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
@@ -55,9 +56,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helper\CommandExtension.cs" />
+    <Compile Include="Helper\RecursiveItemB.cs" />
     <Compile Include="Helper\INestedInterfacePerson.cs" />
     <Compile Include="Helper\InernalAbstractPerson.cs" />
     <Compile Include="Helper\PersonCollection.cs" />
+    <Compile Include="Helper\RecursiveItemA.cs" />
     <Compile Include="Integration\APIFixture.cs" />
     <Compile Include="Integration\ConflictPersonFixture.cs" />
     <Compile Include="Integration\ArrayFixture.cs" />
@@ -67,6 +70,8 @@
     <Compile Include="Helper\IPerson.cs" />
     <Compile Include="Integration\NestedInterfacePersonFixture.cs" />
     <Compile Include="Integration\EnumerableFixture.cs" />
+    <Compile Include="Integration\RecursiveConstructorFixture.cs" />
+    <Compile Include="Integration\StructFixture.cs" />
     <Compile Include="Integration\SystemInfoFixture.cs" />
     <Compile Include="Integration\InternalPersonFixture.cs" />
     <Compile Include="Integration\GeneralFixture.cs" />

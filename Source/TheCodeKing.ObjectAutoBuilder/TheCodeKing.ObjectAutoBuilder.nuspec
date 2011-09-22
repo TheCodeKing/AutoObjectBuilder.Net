@@ -11,6 +11,6 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <copyright>Copyright 2011</copyright>
-    <tags>unittest test-tests testing mock stub proxy</tags>
+    <tags>unittest unit-tests testing mock stub proxy</tags>
   </metadata>
 </package>
